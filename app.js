@@ -62,7 +62,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 }
 
 app.get('/', function(req, res) {
-  fs.readFile(__dirname + 'privacy.md', 'utf-8', function(err, data) {
+  fs.readFile(__dirname + '/privacy.md', 'utf-8', function(err, data) {
     if (err) throw err;
     res.send(converter.makeHtml(data));
   });
