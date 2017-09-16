@@ -245,7 +245,7 @@ function receivedMessage(event) {
         {
             command: /^buy ([0-9 a-zA-Z])+$/i,
             action: (stockName) => {
-                sendTextMessage(senderID, `Ha ha ha ${senderID}, ${stockName}`);
+                sendTextMessage(senderID, `Ha ha ha ${stockName}`);
             }
         }
     ];
@@ -254,6 +254,7 @@ function receivedMessage(event) {
         let results = messageText.match(handler.command);
         if(results) {
             let params = results.slice(1);
+            console.log(params);
             handler.action.apply(this, params);
             return;
         }
