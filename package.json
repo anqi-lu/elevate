@@ -1,0 +1,20 @@
+{
+  "name": "elevate",
+  "version": "1.0.0",
+  "description": "Allows you to trade stocks and bitcoin through a simple, easy-to-use Facebook Messenger Chatbot.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anqi-lu/elevate.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/anqi-lu/elevate/issues"
+  },
+  "homepage": "https://github.com/anqi-lu/elevate#readme"
+}
