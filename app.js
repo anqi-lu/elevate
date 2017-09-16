@@ -61,7 +61,7 @@ if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
   process.exit(1);
 }
 
-app.get('/', function(req, res) {
+app.get('/privacy', function(req, res) {
   fs.readFile(__dirname + '/privacy.md', 'utf-8', function(err, data) {
     if (err) throw err;
     res.send(converter.makeHtml(data));
