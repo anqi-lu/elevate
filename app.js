@@ -134,7 +134,7 @@ app.get('/authorize', function (req, res) {
     var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 });
 
-app.get('test', (req, res) => {
+app.get('/test', (req, res) => {
     sendTextMessage(1684435621589773, 'Hi!!!!');
 });
 
