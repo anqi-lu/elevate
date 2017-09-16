@@ -67,7 +67,7 @@ app.get('/', function(req, res) {
     res.send(converter.makeHtml(data));
   });
 });
-})
+
 
 /*
  * Use your own validation token. Check that the token used in the Webhook
