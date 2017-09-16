@@ -8,5 +8,16 @@ module.exports = mongoose.model('User', {
         type: String,
         required: true,
     },
-    
+    robinhood_username: {
+        type: String
+    },
+    robinhood_password: {
+        type: String
+    },
+    "coinbase_access_token": {
+        type: String
+    },
+    "coinbase_refresh_token": {
+        type: String
+    }
 });

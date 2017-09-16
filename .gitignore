@@ -61,3 +61,5 @@ typings/
 config.json
 obj
 bin
+yarn.lock
+package-lock.json

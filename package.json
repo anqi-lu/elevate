@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/anqi-lu/elevate#readme",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "body-parser": "^1.15.0",
+    "coinbase": "^2.0.6",
     "express": "^4.13.4",
     "mongoose": "^4.11.11",
     "request": "^2.72.0",
