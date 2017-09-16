@@ -1,20 +1,30 @@
 {
   "name": "elevate",
   "version": "1.0.0",
-  "description": "Allows you to trade stocks and bitcoin through a simple, easy-to-use Facebook Messenger Chatbot.",
-  "main": "index.js",
+  "description": "Stocks investments can be intimidating. This is a HackMIT project to get college students started with stocks!",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "lint": "jshint --exclude node_modules .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/anqi-lu/elevate.git"
+  "engines": {
+    "node": "~4.1.2"
   },
-  "keywords": [],
-  "author": "",
+  "repository": "github:anqi-lu/elevate.git",
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/anqi-lu/elevate/issues"
   },
-  "homepage": "https://github.com/anqi-lu/elevate#readme"
+  "homepage": "https://github.com/anqi-lu/elevate#readme",
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "config": "^1.20.4",
+    "ejs": "^2.4.2",
+    "express": "^4.13.4",
+    "request": "^2.72.0"
+  }
 }

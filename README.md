@@ -1,9 +1,5 @@
 # Elevate
 
-Allows you to trade stocks and bitcoin through a simple, easy-to-use Facebook Messenger Chatbot.
-
-# Elevate
-
 Stocks/investments can be intimidating. This is a HackMIT project to get college students started with stocks! 
 
 ## Setup
@@ -25,12 +21,6 @@ All webhook code is in `app.js`. It is routed to `/webhook`. This project handle
 ## "Send to Messenger" and "Message Us" Plugin
 
 An example of the "Send to Messenger" plugin and "Message Us" plugin are located at `index.html`. The "Send to Messenger" plugin can be used to trigger an authentication event. More details are available at the [reference docs](https://developers.facebook.com/docs/messenger-platform/plugin-reference).
-
-## License
-
-See the LICENSE file in the root directory of this source tree. Feel free to use and modify the code.
-
-
 
 ## License
 Apache 2.0
