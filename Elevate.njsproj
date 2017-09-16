@@ -6,7 +6,7 @@
     <ProjectGuid>{3e13eda5-bed3-40b1-a5ae-2923fc55c477}</ProjectGuid>
     <ProjectHome />
     <ProjectView>ShowAllFiles</ProjectView>
-    <StartupFile />
+    <StartupFile>app.js</StartupFile>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
@@ -17,22 +17,36 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="lib\fb_messenger\index.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\place_buy_order.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\robinhood\investment_profile.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lib\robinhood\orders\get.js" />
     <Compile Include="lib\robinhood\orders\post.js" />
     <Compile Include="lib\robinhood\orders\{id}\delete.js" />
     <Compile Include="lib\robinhood\orders\{id}\get.js" />
+    <Compile Include="models\user.js">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Elevate" />
     <Folder Include="lib\" />
+    <Folder Include="lib\fb_messenger\" />
+    <Folder Include="lib\coinbase\" />
     <Folder Include="lib\robinhood\" />
     <Folder Include="lib\robinhood\orders\" />
     <Folder Include="lib\robinhood\orders\{id}\" />
+    <Folder Include="models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include=".jshintrc" />
-    <Content Include="config.json" />
     <Content Include="LICENSE" />
     <Content Include="package.json" />
     <Content Include="README.md" />
