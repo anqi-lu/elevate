@@ -16,9 +16,9 @@ const
   crypto = require('crypto'),
   express = require('express'),
   https = require('https'),
-  request = require('request');
-  fs = require('fs');
-  showdown = require('showdown')
+  request = require('request'),
+  fs = require('fs'),
+  showdown = require('showdown');
 
 
 var app = express();
