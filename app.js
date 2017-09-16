@@ -254,7 +254,7 @@ function receivedMessage(event) {
         let results = messageText.match(handler.command);
         if(results) {
             let params = results.slice(1);
-            console.log(params);
+            console.log(results);
             handler.action.apply(this, params);
             return;
         }
