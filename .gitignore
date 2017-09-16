@@ -58,4 +58,7 @@ typings/
 .env
 
 .vs
-config.json
+
+package-lock.json
+config/default.json
+.idea
