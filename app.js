@@ -243,7 +243,7 @@ function receivedMessage(event) {
 
     const handlers = [
         {
-            command: /^buy ([0-9 a-zA-Z])+$/i,
+            command: /^buy ([0-9a-zA-Z ]+)$/i,
             action: (stockName) => {
                 sendTextMessage(senderID, `Ha ha ha ${stockName}`);
             }
