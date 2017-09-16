@@ -250,7 +250,7 @@ function receivedMessage(event) {
         }
     ];
 
-    for(let handler in handlers) {
+    for(let handler of handlers) {
         let results = messageText.match(handler.command);
         if(results) {
             let params = results.slice(1);
