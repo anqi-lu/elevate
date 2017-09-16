@@ -58,4 +58,4 @@ typings/
 .env
 
 .vs
-config
+config.json

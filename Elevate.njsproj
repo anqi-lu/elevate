@@ -23,34 +23,19 @@
     <Compile Include="lib\robinhood\orders\{id}\get.js" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="config\" />
     <Folder Include="Elevate" />
     <Folder Include="lib\" />
     <Folder Include="lib\robinhood\" />
     <Folder Include="lib\robinhood\orders\" />
     <Folder Include="lib\robinhood\orders\{id}\" />
-    <Folder Include="public\" />
-    <Folder Include="public\assets\" />
-    <Folder Include="views\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include=".gitignore" />
     <Content Include=".jshintrc" />
-    <Content Include="config\default.json" />
+    <Content Include="config.json" />
     <Content Include="LICENSE" />
     <Content Include="package.json" />
-    <Content Include="public\assets\allofus480.mov" />
-    <Content Include="public\assets\gearvrsq.png" />
-    <Content Include="public\assets\instagram_logo.gif" />
-    <Content Include="public\assets\like.png" />
-    <Content Include="public\assets\rift.png" />
-    <Content Include="public\assets\riftsq.png" />
-    <Content Include="public\assets\sample.mp3" />
-    <Content Include="public\assets\test.txt" />
-    <Content Include="public\assets\touch.png" />
-    <Content Include="public\index.html" />
     <Content Include="README.md" />
-    <Content Include="views\authorize.ejs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->
