@@ -4,10 +4,11 @@
   "description": "Stocks investments can be intimidating. This is a HackMIT project to get college students started with stocks!",
   "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "engines": {
-    "node": "~4.1.2"
+    "node": "~8.5.0"
   },
   "repository": "github:anqi-lu/elevate.git",
   "license": "Apache-2.0",
@@ -20,6 +21,7 @@
     "express": "^4.13.4",
     "mongoose": "^4.11.11",
     "request": "^2.72.0",
-    "robinhood": "^1.1.1"
+    "robinhood": "^1.1.1",
+    "showdown": "^1.7.4"
   }
 }
