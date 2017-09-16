@@ -225,27 +225,18 @@ function receivedMessage(event) {
     // You may get a text or attachment but not both
     var messageText = message.text;
     var messageAttachments = message.attachments;
-    // var quickReply = message.quick_reply;
-
-    // if (isEcho) {
-    //     // Just logging message echoes to console
-    //     console.log("Received echo for message %s and app %d with metadata %s",
-    //         messageId, appId, metadata);
-    //     return;
-    // } else if (quickReply) {
-    //     var quickReplyPayload = quickReply.payload;
-    //     console.log("Quick reply for message %s with payload %s",
-    //         messageId, quickReplyPayload);
-    //
-    //     sendTextMessage(senderID, "Quick reply tapped");
-    //     return;
-    // }
 
     const handlers = [
         {
             command: /^buy ([0-9a-zA-Z ]+)$/i,
             action: (stockName) => {
-                sendTextMessage(senderID, `Ha ha ha ${stockName}`);
+                sendTextMessage(senderID, `You bought ${stockName}`);
+            }
+        },
+        {
+            command: /^sell ([0-9a-zA-Z ]+)$/i,
+            action: (stockName) => {
+                sendTextMessage(senderID, `You sold ${stockName}`);
             }
         }
     ];
