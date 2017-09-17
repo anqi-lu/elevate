@@ -7,6 +7,11 @@ html(lang="en")
         meta(name="viewport", content="width=device-width, initial-scale=1.0")
     body
         div.ui.aligned.center.container
+            if error
+                div.ui.negative.message
+                    i.close.icon
+                    div.header= error
+
             h2.ui.teal.header.aligned.center= 'Robinhood'
             form.ui.large.form(method="post", action="/robinhood/signin")
                 div.field

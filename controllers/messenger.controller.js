@@ -141,14 +141,27 @@ module.exports = class MessengerController {
             req.on('end', () => {
                 const body = querystring.parse(data);
 
-                console.log(body);
+                this.signIn(body.username, body.password)
+                    .then(() => {
+                            const userID = body.userID;
+                        },
+                        () => {
+                            const html = pug.renderFile('./views/authorize.pug', {
+                                pageTitle: 'Fail to Log in',
+                                error: 'Your Robinhood username or password was entered incorrectly',
+                                userID: req.query.userID
+                            });
+                            res.end(html);
+                        });
                 res.end();
             });
         });
     }
 
     signIn(username, password) {
-        return false;
+        return new Promise((success, fail)=>{
+            fail();
+        });
     }
 
     /*
