@@ -193,13 +193,12 @@ module.exports = class MessengerController {
     }
 
     promoteAccountLinking(facebookUserID) {
-        this.sendButtonMessage(facebookUserID,
-            [
-                {
-                    type: 'account_link',
-                    url: `${this.SERVER_URL}authorize`
-                }
-            ]);
+        this.sendButtonMessage(facebookUserID, [
+            {
+                type: 'account_link',
+                url: `${this.SERVER_URL}authorize`
+            }
+        ]);
     }
 
     /*
