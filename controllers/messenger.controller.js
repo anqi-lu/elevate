@@ -207,6 +207,7 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
+        console.log(JSON.stringify(message));
         if(message.type !== 'text') {
             this.sendTextMessage(senderID, "Quick reply tapped");
             return;
@@ -214,7 +215,6 @@ module.exports = class MessengerController {
 
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
-        console.log(JSON.stringify(message));
 
         // var isEcho = message.is_echo;
         var messageId = message.mid;
@@ -224,21 +224,6 @@ module.exports = class MessengerController {
         // You may get a text or attachment but not both
         var messageText = message.text;
         var messageAttachments = message.attachments;
-        // var quickReply = message.quick_reply;
-
-        // if (isEcho) {
-        //     // Just logging message echoes to console
-        //     console.log("Received echo for message %s and app %d with metadata %s",
-        //         messageId, appId, metadata);
-        //     return;
-        // } else if (quickReply) {
-        //     var quickReplyPayload = quickReply.payload;
-        //     console.log("Quick reply for message %s with payload %s",
-        //         messageId, quickReplyPayload);
-        //
-        //     sendTextMessage(senderID, "Quick reply tapped");
-        //     return;
-        // }
 
         const handlers = [
             {
