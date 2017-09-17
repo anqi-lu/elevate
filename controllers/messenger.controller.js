@@ -216,8 +216,10 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
-        if(!message.text)
+        if(!message.text) {
             this.sendTextMessage(senderID, `Ha?`);
+            return;
+        }
 
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
