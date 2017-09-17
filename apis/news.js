@@ -23,10 +23,11 @@ class CalculateScore {
   constructor(keyword) {
     this.keyword = keyword;
     this.score = 0.5;
+    this.document = [];
   }
 
   getNews() {
-    return new Promise(function(success, fail){
+    return new Promise((success, fail) => {
       var opts = {
         'title': this.keyword,
         'sortBy': 'published_at',
@@ -37,26 +38,26 @@ class CalculateScore {
         'entitiesTitleType': ["Company", "Organization"]
       };
       
-      var document = [];
-      var callback = function(error, data, response) {
+      var callback = (error, data, response) => {
         if (error) {
           fail(error);
         }else {
           for (var i = 0; i < data.stories.length; i++){
-            document.push(data.stories[i].title);
+            this.document.push(data.stories[i].title);
           }
         }
-        success(document);
+        success(this.document);
       };
       apiInstance.listStories(opts, callback);
     });
-  };
+  }
 
-  analyze(documents) {
-    return new Promise(function(success, fail){
+  analyze() {
+    console.log("analyze");
+    return new Promise((success, fail) => {
       var post_data = {
         'documents':
-          documents
+          this.document
       };
 
       var post_options = {
@@ -74,7 +75,7 @@ class CalculateScore {
 
       // Set up the request
       var analyzedHeadlines;
-      var post_req = https.request(post_options, function(res) {
+      var post_req = https.request(post_options, (res) => {
           res.setEncoding('utf8');
           res.on('data', function (chunk) {
               analyzedHeadlines = JSON.parse(chunk);
@@ -90,9 +91,10 @@ class CalculateScore {
       post_req.write(JSON.stringify(post_data));
       post_req.end(); 
     });
-  };
+  }
 
   calculateScore(scores) {
+    console.log(scores);
     let sum = 0
     let i = 0;
     scores.map(function(score) {
@@ -105,18 +107,19 @@ class CalculateScore {
 
   /* based on the news, calculate score of positiveness/negativeness */
 
-  exe(){ 
+  exe(){
     this.getNews()
     .then(function(newList){
-        documents = newList.map((headline)=>{
-          let uuidv1 = uuidV1();
+      this.document = newList.map((headline) => {
+        let uuidv1 = uuidV1();
           return {
             'language': 'en',
             'id': uuidv1,
-            'text':headline
+            'text': headline
           };
       });
-      analyze(documents).then(analyzedHeadline => calculateScore(analyzedHeadline["documents"])
+      console.log(key);
+      analyze().then(analyzedHeadline => calculateScore(analyzedHeadline["documents"])
       , err => { console.log(err) }
       );
     }, err => { console.log(err) });
@@ -125,4 +128,4 @@ class CalculateScore {
 
 var key = new CalculateScore('Spotify');
 key.exe()
-console.log(key.score);
+//console.log(key)
