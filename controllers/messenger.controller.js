@@ -496,8 +496,8 @@ module.exports = class MessengerController {
 
                 } else {
                     handler.action.apply(this, params);
-                    return;
                 }
+                return;
             }
         }
         this.sendTextMessage(senderID, `I haven't supported '${messageText}' yet. Please reply 'help' to check all the commands available.`);
