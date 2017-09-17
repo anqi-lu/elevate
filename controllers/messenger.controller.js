@@ -391,7 +391,7 @@ module.exports = class MessengerController {
             }
         }
 
-        this.sendTextMessage(senderID, `I haven't supported ${messageText} yet. Please reply 'help' to check all the commands available.`);
+        this.sendTextMessage(senderID, `I haven't supported '${messageText}' yet. Please reply 'help' to check all the commands available.`);
     }
 
 
