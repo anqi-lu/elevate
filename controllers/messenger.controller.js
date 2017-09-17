@@ -10,7 +10,8 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const config = require('config');
+const config = require('config'),
+    crypto = require('crypto');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -182,7 +183,7 @@ module.exports = class MessengerController {
 
         // When an authentication is received, we'll send a message back to the sender
         // to let them know it was successful.
-        sendTextMessage(senderID, "Authentication successful");
+        this.sendTextMessage(senderID, "Authentication successful");
     }
 
     /*
@@ -237,7 +238,7 @@ module.exports = class MessengerController {
             {
                 command: /^buy ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                    sendTextMessage(senderID, `Ha ha ha ${stockName}`);
+                    this.sendTextMessage(senderID, `Ha ha ha ${stockName}`);
                 }
             }
         ];
@@ -252,7 +253,7 @@ module.exports = class MessengerController {
             }
         }
 
-        sendTextMessage(senderID, messageText);
+        this.sendTextMessage(senderID, messageText);
 
 
         // if (messageText) {
@@ -372,7 +373,7 @@ module.exports = class MessengerController {
 
         // When a postback is called, we'll send a message back to the sender to
         // let them know it was successful
-        sendTextMessage(senderID, "Postback called");
+        this.sendTextMessage(senderID, "Postback called");
     }
 
     /*
