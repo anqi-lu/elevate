@@ -10,32 +10,34 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const config = require('config');
+const config = require('config'),
+    crypto = require('crypto'),
+    request = require('request');
 
 module.exports = class MessengerController {
     constructor(app) {
         // App Secret can be retrieved from the App Dashboard
-        const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
+        this.APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
             process.env.MESSENGER_APP_SECRET :
             config.get('appSecret');
 
         // Arbitrary value used to validate a webhook
-        const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
+        this.VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
             (process.env.MESSENGER_VALIDATION_TOKEN) :
             config.get('validationToken');
 
         // Generate a page access token for your page from the App Dashboard
-        const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
+        this.PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
             (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
             config.get('pageAccessToken');
 
         // URL where the app is running (include protocol). Used to point to scripts and
         // assets located at this address.
-        const SERVER_URL = (process.env.SERVER_URL) ?
+        this.SERVER_URL = (process.env.SERVER_URL) ?
             (process.env.SERVER_URL) :
             config.get('serverURL');
 
-        if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
+        if (!(this.APP_SECRET && this.VALIDATION_TOKEN && this.PAGE_ACCESS_TOKEN && this.SERVER_URL)) {
             console.error("Missing config values");
             process.exit(1);
         }
@@ -48,7 +50,7 @@ module.exports = class MessengerController {
          */
         app.get('/webhook', (req, res) => {
             if (req.query['hub.mode'] === 'subscribe' &&
-                req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+                req.query['hub.verify_token'] === this.VALIDATION_TOKEN) {
                 console.log("Validating webhook");
                 res.status(200).send(req.query['hub.challenge']);
             } else {
@@ -146,7 +148,7 @@ module.exports = class MessengerController {
             var method = elements[0];
             var signatureHash = elements[1];
 
-            var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+            var expectedHash = crypto.createHmac('sha1', this.APP_SECRET)
                 .update(buf)
                 .digest('hex');
 
@@ -182,7 +184,7 @@ module.exports = class MessengerController {
 
         // When an authentication is received, we'll send a message back to the sender
         // to let them know it was successful.
-        sendTextMessage(senderID, "Authentication successful");
+        this.sendTextMessage(senderID, "Authentication successful");
     }
 
     /*
@@ -205,9 +207,10 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
+        console.log(JSON.stringify(event));
+
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
-        console.log(JSON.stringify(message));
 
         // var isEcho = message.is_echo;
         var messageId = message.mid;
@@ -217,27 +220,55 @@ module.exports = class MessengerController {
         // You may get a text or attachment but not both
         var messageText = message.text;
         var messageAttachments = message.attachments;
-        // var quickReply = message.quick_reply;
-
-        // if (isEcho) {
-        //     // Just logging message echoes to console
-        //     console.log("Received echo for message %s and app %d with metadata %s",
-        //         messageId, appId, metadata);
-        //     return;
-        // } else if (quickReply) {
-        //     var quickReplyPayload = quickReply.payload;
-        //     console.log("Quick reply for message %s with payload %s",
-        //         messageId, quickReplyPayload);
-        //
-        //     sendTextMessage(senderID, "Quick reply tapped");
-        //     return;
-        // }
 
         const handlers = [
             {
-                command: /^buy ([0-9a-zA-Z ]+)$/i,
+                // buy 100 Apple
+                command: /^buy ([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (numOfShares, stockName) => {
+                    this.sendTextMessage(senderID, `Bought ${numOfShares} shares of ${stockName}`);
+                }
+            },
+            {
+                // buy $100 Apple
+                command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (dollars, stockName) => {
+                    this.sendTextMessage(senderID, `Bought 20 shares of ${stockName} worth $${dollars}`);
+                }
+            },
+            {
+                // sell 100 Apple
+                command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (numOfShares, stockName) => {
+                    this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
+                }
+            },
+            {
+                // buy $100 Apple
+                command: /^sell \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (dollars, stockName) => {
+                    this.sendTextMessage(senderID, `Sold 20 shares of ${stockName} worth $${dollars}`);
+                }
+            },
+            {
+                //list
+                command : /^list$/i,
+                action: () => {
+                    this.sendTextMessage(senderID, `List all orders`);
+                }
+            },
+            {
+                //get stockName
+                command : /^get ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                    sendTextMessage(senderID, `Ha ha ha ${stockName}`);
+                    this.sendTextMessage(senderID, `${stockName} : $127.65`);
+                }
+            },
+            {
+                //cancel
+                command : /^cancel$/i,
+                action: () => {
+                    this.sendTextMessage(senderID, `cancel current order`);
                 }
             }
         ];
@@ -252,75 +283,7 @@ module.exports = class MessengerController {
             }
         }
 
-        sendTextMessage(senderID, messageText);
-
-
-        // if (messageText) {
-        //     switch (messageText) {
-        //         case ''
-        //     }
-        // If we receive a text message, check to see if it matches any special
-        // keywords and send back the corresponding example. Otherwise, just echo
-        // the text we received.
-        // switch (messageText) {
-        //     case 'image':
-        //         sendImageMessage(senderID);
-        //         break;
-        //
-        //     case 'gif':
-        //         sendGifMessage(senderID);
-        //         break;
-        //
-        //     case 'audio':
-        //         sendAudioMessage(senderID);
-        //         break;
-        //
-        //     case 'video':
-        //         sendVideoMessage(senderID);
-        //         break;
-        //
-        //     case 'file':
-        //         sendFileMessage(senderID);
-        //         break;
-        //
-        //     case 'button':
-        //         sendButtonMessage(senderID);
-        //         break;
-        //
-        //     case 'generic':
-        //         sendGenericMessage(senderID);
-        //         break;
-        //
-        //     case 'receipt':
-        //         sendReceiptMessage(senderID);
-        //         break;
-        //
-        //     case 'quick reply':
-        //         sendQuickReply(senderID);
-        //         break;
-        //
-        //     case 'read receipt':
-        //         sendReadReceipt(senderID);
-        //         break;
-        //
-        //     case 'typing on':
-        //         sendTypingOn(senderID);
-        //         break;
-        //
-        //     case 'typing off':
-        //         sendTypingOff(senderID);
-        //         break;
-        //
-        //     case 'account linking':
-        //         sendAccountLinking(senderID);
-        //         break;
-        //
-        //     default:
-        //         sendTextMessage(senderID, messageText);
-        // }
-        // } else if (messageAttachments) {
-        //     sendTextMessage(senderID, "Message with attachment received");
-        // }
+        this.sendTextMessage(senderID, messageText);
     }
 
 
@@ -372,7 +335,7 @@ module.exports = class MessengerController {
 
         // When a postback is called, we'll send a message back to the sender to
         // let them know it was successful
-        sendTextMessage(senderID, "Postback called");
+        this.sendTextMessage(senderID, "Postback called");
     }
 
     /*
@@ -813,6 +776,13 @@ module.exports = class MessengerController {
      *
      */
     callSendAPI(messageData) {
+        console.log(JSON.stringify({
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token: this.PAGE_ACCESS_TOKEN},
+            method: 'POST',
+            json: messageData
+
+        }));
         request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: this.PAGE_ACCESS_TOKEN},
@@ -836,4 +806,4 @@ module.exports = class MessengerController {
             }
         });
     }
-}
+};
