@@ -223,11 +223,17 @@ module.exports = class MessengerController {
 
         const handlers = [
             {
-                command: /^buy ([0-9a-zA-Z ]+)$/i,
-                action: (stockName) => {
-                    this.sendTextMessage(senderID, `Ha ha ha ${stockName}`);
+                command: /^buy ([0-9a-zA-Z ]+) ([0-9]+)$/i,
+                action: (stockName, numOfShares) => {
+                    this.sendTextMessage(senderID, `Bought ${numOfShares} shares of ${stockName}`);
                 }
-            }
+            },
+            {
+                command: /^sell ([0-9a-zA-Z ]+) ([0-9]+)$/i,
+                action: (stockName, numOfShares) => {
+                    this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
+                }
+            },
         ];
 
         for (let handler of handlers) {
@@ -241,74 +247,6 @@ module.exports = class MessengerController {
         }
 
         this.sendTextMessage(senderID, messageText);
-
-
-        // if (messageText) {
-        //     switch (messageText) {
-        //         case ''
-        //     }
-        // If we receive a text message, check to see if it matches any special
-        // keywords and send back the corresponding example. Otherwise, just echo
-        // the text we received.
-        // switch (messageText) {
-        //     case 'image':
-        //         sendImageMessage(senderID);
-        //         break;
-        //
-        //     case 'gif':
-        //         sendGifMessage(senderID);
-        //         break;
-        //
-        //     case 'audio':
-        //         sendAudioMessage(senderID);
-        //         break;
-        //
-        //     case 'video':
-        //         sendVideoMessage(senderID);
-        //         break;
-        //
-        //     case 'file':
-        //         sendFileMessage(senderID);
-        //         break;
-        //
-        //     case 'button':
-        //         sendButtonMessage(senderID);
-        //         break;
-        //
-        //     case 'generic':
-        //         sendGenericMessage(senderID);
-        //         break;
-        //
-        //     case 'receipt':
-        //         sendReceiptMessage(senderID);
-        //         break;
-        //
-        //     case 'quick reply':
-        //         sendQuickReply(senderID);
-        //         break;
-        //
-        //     case 'read receipt':
-        //         sendReadReceipt(senderID);
-        //         break;
-        //
-        //     case 'typing on':
-        //         sendTypingOn(senderID);
-        //         break;
-        //
-        //     case 'typing off':
-        //         sendTypingOff(senderID);
-        //         break;
-        //
-        //     case 'account linking':
-        //         sendAccountLinking(senderID);
-        //         break;
-        //
-        //     default:
-        //         sendTextMessage(senderID, messageText);
-        // }
-        // } else if (messageAttachments) {
-        //     sendTextMessage(senderID, "Message with attachment received");
-        // }
     }
 
 
