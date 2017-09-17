@@ -142,9 +142,8 @@ module.exports = class MessengerController {
                 const body = querystring.parse(data);
 
                 console.log(body);
-
+                res.end();
             });
-            res.end();
         });
     }
 
