@@ -12,7 +12,6 @@
 
 const crypto = require('crypto'),
     request = require('request'),
-    robinhood = require('robinhood'),
     orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
@@ -322,10 +321,15 @@ module.exports = class MessengerController {
                 //get stock price
                 command: /^price of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                    robinhood(null).quote_data(stockName, (err, res, body) => {
-                        if (err) this.sendTextMessage(senderID, `I am not able to find the stock price for ${stockName}`);
-                        const price = body.results[0].ask_price;
-                        this.sendTextMessage(senderID, `${stockName} is at ${price}`);
+                    var Robinhood = require('robinhood')({token: ''}, function(){
+
+                        Robinhood.quote_data('GOOG', function(error, response, body) {
+                            if (error) this.sendTextMessage(senderID, `I am not able to find the stock price for ${stockName}`);
+                            const price = body.results[0].ask_price;
+                            // this.sendTextMessage(senderID, `${stockName} is at ${price}`);
+                            console.log(body);
+                        });
+
                     });
                 }
             },
