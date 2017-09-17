@@ -192,6 +192,10 @@ module.exports = class MessengerController {
         return null;
     }
 
+    promoteAccountLinking(facebookID) {
+
+    }
+
     /*
      * Message Event
      *
@@ -211,6 +215,8 @@ module.exports = class MessengerController {
         var recipientID = event.recipient.id;
         var timeOfMessage = event.timestamp;
         var message = event.message;
+
+        console.log(JSON.stringify(event));
 
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
@@ -290,7 +296,10 @@ module.exports = class MessengerController {
                 let params = results.slice(1);
                 if(handler.getUser) {
                     const user = handler.getUser();
-                    if(!user) continue;
+                    if(!user) {
+                        this.promoteAccountLinking(senderID);
+                        continue;
+                    }
                     params.append(user);
                 }
 
