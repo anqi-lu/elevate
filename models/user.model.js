@@ -6,7 +6,6 @@ module.exports = mongoose.model('Users', {
     },
     facebook_profile_id: {
         type: String,
-        required: true,
     },
     robinhood_username: {
         type: String

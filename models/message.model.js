@@ -10,8 +10,5 @@ module.exports = mongoose.Collection('Messages', {
     parameters: {
         type: Objcet
     },
-    validated: {
-        type: Boolean
-    },
     timestamp: { type: Date, default: Date.now }
 });
