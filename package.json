@@ -23,6 +23,7 @@
     "config": "^1.26.2",
     "express": "^4.13.4",
     "mongoose": "^4.11.11",
+    "pug": "^2.0.0-rc.4",
     "request": "^2.72.0",
     "robinhood": "^1.1.1",
     "showdown": "^1.7.4"

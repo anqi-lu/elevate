@@ -12,7 +12,8 @@
 
 const config = require('config'),
     crypto = require('crypto'),
-    request = require('request');
+    request = require('request'),
+    pug = require('pug');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -124,6 +125,9 @@ module.exports = class MessengerController {
 
                 // Redirect users to this URI on successful login
                 var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+
+                var html = pug.renderFile('../views/authorize.pug', {});
+                res.end(html);
             }
         );
     }
