@@ -7,7 +7,7 @@ const app = require('./app');
 const fs = require('fs');
 const path = require('path');
 const express = require('express');
-const config = require('./config');
+const config = fs.existsSync(path.join(__dirname, 'config.json')) ? require('./config') : {};
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
 
