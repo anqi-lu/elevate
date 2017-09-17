@@ -444,7 +444,6 @@ module.exports = class MessengerController {
                 }
             },
             {
-                getUser: () => this.findUser(senderID),
                 //get news
                 command: /^news of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
@@ -463,9 +462,8 @@ module.exports = class MessengerController {
                 }
             },
             {
-                getUser: () => this.findUser(senderID),
                 command: /^visualize$/i,
-                action: (stockName) => {
+                action: () => {
                     this.sendImageMessage(senderID)
                 }
 
