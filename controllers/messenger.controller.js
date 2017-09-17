@@ -374,18 +374,14 @@ module.exports = class MessengerController {
         for (let handler of handlers) {
             let results = messageText.match(handler.command);
             if (results) {
-
                 let params = results.slice(1);
-                if (handler.getUser) {
-                    const user = handler.getUser();
-                    if (!user) {
-                        this.promoteAccountLinking(senderID);
-                        return;
+                handler.getUser().then((err, user) => {
+                    if (err) {
+                        return this.promoteAccountLinking(senderID);
                     }
-                    params.append(user);
-                }
-
-                handler.action.apply(this, params);
+                    return params.append(user);
+                    handler.action.apply(this, params);
+                });
             }
         }
 
