@@ -16,6 +16,7 @@ const    crypto = require('crypto'),
     orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
+    Score = require('./news.js'),
     pug = require('pug');
 const user = require('../models/user.model');
 
@@ -368,6 +369,33 @@ module.exports = class MessengerController {
                           this.sendTextMessage(senderID, `${stockName} is at ${answer}`)
                       });
                 }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                //get news
+                command: /^news of ([0-9a-zA-Z ]+)$/i,
+                action: (stockName) => {
+                    const news = new Score(stockName);
+                    news.exe();
+                    const score = news.score;
+                    const answer = news.document;
+                    const addition = "";
+                    if (score < 0.3) {
+                        addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
+                    }else if (score > 0.7) {
+                        addition = `. ${stockName} has been showing up positively in media. Good for you!`;
+                    }
+                    this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
+                    this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                command: /^visualize$/i,
+                action: (stockName) => {
+                    this.sendImageMessage(senderID)
+                }
+                
             }
         ];
 
@@ -490,7 +518,7 @@ module.exports = class MessengerController {
                 attachment: {
                     type: "image",
                     payload: {
-                        url: this.SERVER_URL + "/assets/rift.png"
+                        url: this.SERVER_URL + "/image.png"
                     }
                 }
             }
