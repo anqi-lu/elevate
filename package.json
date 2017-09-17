@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/anqi-lu/elevate#readme",
   "dependencies": {
+    "aylien-news-api": "^2.0.2",
     "bluebird": "^3.5.0",
     "body-parser": "^1.15.0",
     "coinbase": "^2.0.6",
