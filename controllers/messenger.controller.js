@@ -207,7 +207,7 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
-        console.log(JSON.stringify(message));
+        console.log(JSON.stringify(event));
         if(message.type !== 'text') {
             this.sendTextMessage(senderID, "Quick reply tapped");
             return;
