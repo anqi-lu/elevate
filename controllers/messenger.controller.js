@@ -195,7 +195,7 @@ module.exports = class MessengerController {
     promoteAccountLinking(facebookUserID) {
         this.sendButtonMessage(facebookUserID, {
             type: 'account_link',
-            text: 'Log into Robinhood and start trading.',
+            text: 'Log into Robinhood and start trading',
             url: `${this.SERVER_URL}authorize`
         });
     }
@@ -550,7 +550,6 @@ module.exports = class MessengerController {
                     type: "template",
                     payload: {
                         template_type: "button",
-                        text: text,
                         buttons: buttons
                     }
                 }
@@ -795,13 +794,6 @@ module.exports = class MessengerController {
      *
      */
     callSendAPI(messageData) {
-        console.log(JSON.stringify({
-            uri: 'https://graph.facebook.com/v2.6/me/messages',
-            qs: {access_token: this.PAGE_ACCESS_TOKEN},
-            method: 'POST',
-            json: messageData
-
-        }));
         request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: this.PAGE_ACCESS_TOKEN},
