@@ -15,7 +15,9 @@ const crypto = require('crypto'),
     orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
+    Score = require('./news.js'),
     pug = require('pug');
+const user = require('../models/user.model');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -130,7 +132,8 @@ module.exports = class MessengerController {
 
                 this.signIn(body.userID, body.username, body.password)
                     .then(() => {
-                            const userID = body.userID;
+                        const userID = body.userID;
+                        res.send();
                         },
                         () => {
                             const html = pug.renderFile('./views/authorize.pug', {
@@ -145,9 +148,28 @@ module.exports = class MessengerController {
         });
     }
 
-    signIn(username, password) {
+    signIn(userId, username, password) {
         return new Promise((success, fail) => {
-            fail();
+            const credentials = {
+                username: username,
+                password: password
+            };
+            const Robinhood = require('robinhood')(credentials, function (err) {
+                if (err) {
+                    return fail(err);
+                }
+                user.findOneAndUpdate(
+                    { facebook_profile_id: userId }, {
+                        robinhood_username: username,
+                        robinhood_password: password
+                    }, (err) => {
+                        if (err) {
+                            return fail(err);
+                        }
+                        return success();
+                    }
+                );
+            });
         });
     }
 
@@ -211,6 +233,16 @@ module.exports = class MessengerController {
     }
 
     findUser(facebookUserID) {
+        return new Promise((resolve, reject) => {
+            user.findOne({ facebook_profile_id: facebookUserID }, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve();
+
+            });
+       
+        });
         console.log(facebookUserID);
         return null;
     }
@@ -410,25 +442,48 @@ module.exports = class MessengerController {
                         .join('\n\n');
                     this.sendTextMessage(senderID, helpMessage);
                 }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                //get news
+                command: /^news of ([0-9a-zA-Z ]+)$/i,
+                action: (stockName) => {
+                    const news = new Score(stockName);
+                    news.exe();
+                    const score = news.score;
+                    const answer = news.document;
+                    const addition = "";
+                    if (score < 0.3) {
+                        addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
+                    }else if (score > 0.7) {
+                        addition = `. ${stockName} has been showing up positively in media. Good for you!`;
+                    }
+                    this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
+                    this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                command: /^visualize$/i,
+                action: (stockName) => {
+                    this.sendImageMessage(senderID)
+                }
+                
             }
         ];
 
         for (let handler of handlers) {
             let results = messageText.match(handler.command);
             if (results) {
-
                 let params = results.slice(1);
-                if (handler.getUser) {
-                    const user = handler.getUser();
-                    if (!user) {
-                        this.promoteAccountLinking(senderID);
-                        return;
-                    }
-                    params.append(user);
+                if(handler.getUser) {
+                    handler.getUser().catch((err) => {
+                        return this.promoteAccountLinking(senderID);
+                    }).then((user) => {
+                        params.append(user);
+                        handler.action.apply(this, params);
+                    });
                 }
-
-                handler.action.apply(this, params);
-                return;
             }
         }
 
@@ -538,7 +593,7 @@ module.exports = class MessengerController {
                 attachment: {
                     type: "image",
                     payload: {
-                        url: this.SERVER_URL + "/assets/rift.png"
+                        url: this.SERVER_URL + "/image.png"
                     }
                 }
             }

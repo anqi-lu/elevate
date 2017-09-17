@@ -21,6 +21,9 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="controllers\account.controller.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="controllers\messenger.controller.js" />
     <Compile Include="lib\fb_messenger\events\delivery.js">
       <SubType>Code</SubType>
