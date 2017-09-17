@@ -538,7 +538,7 @@ module.exports = class MessengerController {
      * Send a button message using the Send API.
      *
      */
-    sendButtonMessage(recipientId, buttons) {
+    sendButtonMessage(recipientId, text, buttons) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -548,12 +548,12 @@ module.exports = class MessengerController {
                     type: "template",
                     payload: {
                         template_type: "button",
+                        text: text,
                         buttons: buttons
                     }
                 }
             }
         };
-
         this.callSendAPI(messageData);
     }
 
