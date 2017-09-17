@@ -1,5 +1,5 @@
 ﻿const mongoose = require('mongoose');
-module.exports = mongoose.model('Users', {
+module.exports = mongoose.model('account', {
     name: {
         type: String,
         required: true,
