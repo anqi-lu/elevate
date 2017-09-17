@@ -70,45 +70,45 @@ module.exports = class MessengerController {
          *
          */
         app.post('/webhook', (req, res) => {
-                var data = req.body;
+            var data = req.body;
 
-                // Make sure this is a page subscription
-                if (data.object === 'page') {
-                    // Iterate over each entry
-                    // There may be multiple if batched
-                    data.entry.forEach((pageEntry) => {
-                            var pageID = pageEntry.id;
-                            var timeOfEvent = pageEntry.time;
+            // Make sure this is a page subscription
+            if (data.object === 'page') {
+                // Iterate over each entry
+                // There may be multiple if batched
+                data.entry.forEach((pageEntry) => {
+                        var pageID = pageEntry.id;
+                        var timeOfEvent = pageEntry.time;
 
-                            // Iterate over each messaging event
-                            pageEntry.messaging.forEach((messagingEvent) => {
-                                    if (messagingEvent.optin) {
-                                        this.receivedAuthentication(messagingEvent);
-                                    } else if (messagingEvent.message) {
-                                        this.receivedMessage(messagingEvent);
-                                    } else if (messagingEvent.delivery) {
-                                        this.receivedDeliveryConfirmation(messagingEvent);
-                                    } else if (messagingEvent.postback) {
-                                        this.receivedPostback(messagingEvent);
-                                    } else if (messagingEvent.read) {
-                                        this.receivedMessageRead(messagingEvent);
-                                    } else if (messagingEvent.account_linking) {
-                                        this.receivedAccountLink(messagingEvent);
-                                    } else {
-                                        console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-                                    }
+                        // Iterate over each messaging event
+                        pageEntry.messaging.forEach((messagingEvent) => {
+                                if (messagingEvent.optin) {
+                                    this.receivedAuthentication(messagingEvent);
+                                } else if (messagingEvent.message) {
+                                    this.receivedMessage(messagingEvent);
+                                } else if (messagingEvent.delivery) {
+                                    this.receivedDeliveryConfirmation(messagingEvent);
+                                } else if (messagingEvent.postback) {
+                                    this.receivedPostback(messagingEvent);
+                                } else if (messagingEvent.read) {
+                                    this.receivedMessageRead(messagingEvent);
+                                } else if (messagingEvent.account_linking) {
+                                    this.receivedAccountLink(messagingEvent);
+                                } else {
+                                    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
                                 }
-                            );
-                        }
-                    );
+                            }
+                        );
+                    }
+                );
 
-                    // Assume all went well.
-                    //
-                    // You must send back a 200, within 20 seconds, to let us know you've
-                    // successfully received the callback. Otherwise, the request will time out.
-                    res.sendStatus(200);
-                }
-            });
+                // Assume all went well.
+                //
+                // You must send back a 200, within 20 seconds, to let us know you've
+                // successfully received the callback. Otherwise, the request will time out.
+                res.sendStatus(200);
+            }
+        });
 
         /*
          * This path is used for account linking. The account linking call-to-action
@@ -116,19 +116,20 @@ module.exports = class MessengerController {
          *
          */
         app.get('/authorize', (req, res) => {
-                var accountLinkingToken = req.query.account_linking_token;
-                var redirectURI = req.query.redirect_uri;
+            // var accountLinkingToken = req.query.account_linking_token;
+            // var redirectURI = req.query.redirect_uri;
+            //
+            // // Authorization Code should be generated per user by the developer. This will
+            // // be passed to the Account Linking callback.
+            // var authCode = "1234567890";
+            //
+            // // Redirect users to this URI on successful login
+            // var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 
-                // Authorization Code should be generated per user by the developer. This will
-                // be passed to the Account Linking callback.
-                var authCode = "1234567890";
-
-                // Redirect users to this URI on successful login
-                var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
-                var html = pug.renderFile('./views/authorize.pug', {});
-                res.end(html);
-            });
+            console.log(req.params);
+            var html = pug.renderFile('./views/authorize.pug', {});
+            res.end(html);
+        });
 
         app.post('/robinhood/signin', (req, res) => {
             var data = '';
@@ -142,6 +143,10 @@ module.exports = class MessengerController {
             });
             res.end();
         });
+    }
+
+    signIn(username, password) {
+        return false;
     }
 
     /*
@@ -215,7 +220,7 @@ module.exports = class MessengerController {
             [
                 {
                     type: 'account_link',
-                    url: `${this.SERVER_URL}authorize`
+                    url: `${this.SERVER_URL}authorize?userID=${facebookUserID}`
                 }
             ]
         );
