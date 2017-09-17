@@ -308,7 +308,7 @@ module.exports = class MessengerController {
                     const user = handler.getUser();
                     if (!user) {
                         this.promoteAccountLinking(senderID);
-                        continue;
+                        return;
                     }
                     params.append(user);
                 }
