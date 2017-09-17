@@ -223,17 +223,33 @@ module.exports = class MessengerController {
 
         const handlers = [
             {
-                command: /^buy ([0-9a-zA-Z ]+) ([0-9]+)$/i,
-                action: (stockName, numOfShares) => {
+                // buy 100 Apple
+                command: /^buy ([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (numOfShares, stockName) => {
                     this.sendTextMessage(senderID, `Bought ${numOfShares} shares of ${stockName}`);
                 }
             },
             {
-                command: /^sell ([0-9a-zA-Z ]+) ([0-9]+)$/i,
+                // buy $100 Apple
+                command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (stockName, dollars) => {
+                    this.sendTextMessage(senderID, `Bought 20 shares of ${stockName} worth $${dollars}`);
+                }
+            },
+            {
+                // sell 100 Apple
+                command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (stockName, numOfShares) => {
                     this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
                 }
             },
+            {
+                // buy $100 Apple
+                command: /^sell \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (dollars, stockName) => {
+                    this.sendTextMessage(senderID, `Sold 20 shares of ${stockName} worth $${dollars}`);
+                }
+            }
         ];
 
         for (let handler of handlers) {
