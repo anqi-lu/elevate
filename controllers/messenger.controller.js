@@ -83,7 +83,6 @@ module.exports = class MessengerController {
                                     if (messagingEvent.optin) {
                                         this.receivedAuthentication(messagingEvent);
                                     } else if (messagingEvent.message) {
-                                        console.log(messagingEvent.message, "++++++++++++++++");
                                         this.receivedMessage(messagingEvent);
                                     } else if (messagingEvent.delivery) {
                                         this.receivedDeliveryConfirmation(messagingEvent);
@@ -207,6 +206,9 @@ module.exports = class MessengerController {
         var recipientID = event.recipient.id;
         var timeOfMessage = event.timestamp;
         var message = event.message;
+
+        if(message.type !== 'text')
+            this.sendTextMessage(senderID, "Quick reply tapped");
 
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
