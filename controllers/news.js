@@ -103,6 +103,8 @@ module.exports = class CalculateScore {
       sum += score["score"];
     });
     this.score = sum / i; 
+    console.log(this.score);
+    console.log(this.document);
     return sum / i;
   }
 
@@ -125,4 +127,3 @@ module.exports = class CalculateScore {
     }, err => { console.log(err) });
   }
 }
-

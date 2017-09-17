@@ -376,7 +376,8 @@ module.exports = class MessengerController {
                 command: /^news of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
                     const news = new Score(stockName);
-                    news.exe();
+                    
+                    setTimeout(news.exe(), 1000);
                     const score = news.score;
                     const answer = news.document;
                     const addition = "";
