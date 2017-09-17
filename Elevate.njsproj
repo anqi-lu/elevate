@@ -39,9 +39,6 @@
     <Compile Include="lib\fb_messenger\index.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="lib\fb_messenger\place_buy_order.js">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="lib\fb_messenger\send_examples.js">
       <SubType>Code</SubType>
     </Compile>

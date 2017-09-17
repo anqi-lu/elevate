@@ -1,5 +1,5 @@
 ﻿const mongoose = require('mongoose');
-module.exports = mongoose.Collection('messages', {
+module.exports = mongoose.Collection('Messages', {
     user_id: {
         type: Schema.Types.ObjectId,
         required: true
@@ -7,11 +7,11 @@ module.exports = mongoose.Collection('messages', {
     command: {
         type: String
     },
+    parameters: {
+        type: Objcet
+    }
     validated: {
         type: Boolean
-    },
-    context: {
-        type: Object // the context is any additional information helpful for subsequent requets
     },
     timestamp: { type: Date, default: Date.now }
 });

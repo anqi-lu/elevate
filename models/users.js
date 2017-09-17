@@ -1,5 +1,5 @@
 ﻿const mongoose = require('mongoose');
-module.exports = mongoose.model('User', {
+module.exports = mongoose.model('Users', {
     name: {
         type: String,
         required: true,
@@ -19,5 +19,11 @@ module.exports = mongoose.model('User', {
     },
     "coinbase_refresh_token": {
         type: String
+    },
+    "previous_command": {
+        type: String
+    },
+    "state": {
+        type: Object
     }
 });
