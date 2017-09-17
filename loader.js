@@ -24,8 +24,7 @@ app.set('port', process.env.PORT);
 app.use(bodyParser.json());
 module.exports = app;
 
-app.use('/messenger', require('./apis/messenger'));
-//app.use('api', require('./lib/api'));
+app.use('/fb_messenger', require('./lib/fb_messenger'));
 
 app.get('/*.md', function (req, res) {
     const filename_parts = req.url.split('/');
