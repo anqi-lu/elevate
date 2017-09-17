@@ -405,19 +405,19 @@ module.exports = class MessengerController {
                 action: () => {
                     const commands = [
                         {
-                            cmd: 'buy 100 Apple',
+                            cmd: 'buy 100 APPL',
                             message: 'Buy 100 units Apple stock'
                         },
                         {
-                            cmd: 'buy $100 Apple',
+                            cmd: 'buy $100 APPL',
                             message: 'Buy Apple stocks worth 100 dollars'
                         },
                         {
-                            cmd: 'sell 100 Apple',
+                            cmd: 'sell 100 APPL',
                             message: 'Sell 100 units Apple stock'
                         },
                         {
-                            cmd: 'sell $100 Apple',
+                            cmd: 'sell $100 APPL',
                             message: 'Sell Apple stocks worth 100 dollars'
                         },
                         {
@@ -429,8 +429,16 @@ module.exports = class MessengerController {
                             message: 'List stock code for popular tech companies'
                         },
                         {
-                            cmd: 'price of Apple',
+                            cmd: 'price of APPL',
                             message: 'Get the current stock price for Apple'
+                        },
+                        {
+                            cmd: 'news of APPL',
+                            message: 'Show news and the probability of making profit for given stock'
+                        },
+                        {
+                            cmd: 'vis APPL',
+                            message: 'Visualize the change of profits and investments'
                         },
                         {
                             cmd: 'cancel',
@@ -463,7 +471,7 @@ module.exports = class MessengerController {
                 }
             },
             {
-                command: /^visualize$/i,
+                command: /^vis/i,
                 action: () => {
                     this.sendImageMessage(senderID)
                 }
@@ -472,7 +480,7 @@ module.exports = class MessengerController {
         ];
 
         for (let handler of handlers) {
-            let results = messageText.match(handler.command);
+            let results= messageText.match(handler.command);
             if (results) {
                 let params = results.slice(1);
                 if (handler.getUser) {
