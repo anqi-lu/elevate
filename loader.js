@@ -10,6 +10,7 @@ const express = require('express');
 const config = fs.existsSync(path.join(__dirname, 'config.json')) ? require('./config') : {};
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
+const messengerController = require('./controllers/messenger.controller');
 
 Object.assign(process.env, config);
 
@@ -24,7 +25,7 @@ app.set('port', process.env.PORT);
 app.use(bodyParser.json());
 module.exports = app;
 
-app.use('/fb_messenger', require('./lib/fb_messenger'));
+new messengerController(app);
 
 app.get('/*.md', function (req, res) {
     const filename_parts = req.url.split('/');
@@ -40,6 +41,10 @@ app.get('/*.md', function (req, res) {
 });
 
 app.use(express.static('public'));
+
+app.listen(process.env.PORT, () => {
+    console.log("loaded");
+})
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
