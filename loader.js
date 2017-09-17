@@ -24,7 +24,7 @@ app.set('port', process.env.PORT);
 app.use(bodyParser.json());
 module.exports = app;
 
-app.use('/fb_messenger', require('./lib/fb_messenger'));
+app.use('/messenger', require('./apis/messenger'));
 //app.use('api', require('./lib/api'));
 
 app.get('/*.md', function (req, res) {
@@ -40,7 +40,7 @@ app.get('/*.md', function (req, res) {
     })
 });
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
