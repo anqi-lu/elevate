@@ -10,9 +10,8 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const    crypto = require('crypto'),
+const crypto = require('crypto'),
     request = require('request'),
-    robinhood = require('robinhood'),
     orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
@@ -133,8 +132,8 @@ module.exports = class MessengerController {
 
                 this.signIn(body.userID, body.username, body.password)
                     .then(() => {
-                        const userID = body.userID;
-                        res.send();
+                            const userID = body.userID;
+                            res.send();
                         },
                         () => {
                             const html = pug.renderFile('./views/authorize.pug', {
@@ -160,7 +159,7 @@ module.exports = class MessengerController {
                     return fail(err);
                 }
                 user.findOneAndUpdate(
-                    { facebook_profile_id: userId }, {
+                    {facebook_profile_id: userId}, {
                         robinhood_username: username,
                         robinhood_password: password
                     }, (err) => {
@@ -235,14 +234,14 @@ module.exports = class MessengerController {
 
     findUser(facebookUserID) {
         return new Promise((resolve, reject) => {
-            user.findOne({ facebook_profile_id: facebookUserID }, (err, data) => {
+            user.findOne({facebook_profile_id: facebookUserID}, (err, data) => {
                 if (err) {
                     return reject(err);
                 }
                 return resolve();
 
             });
-       
+
         });
         console.log(facebookUserID);
         return null;
@@ -344,34 +343,107 @@ module.exports = class MessengerController {
             },
             {
                 getUser: () => this.findUser(senderID),
-                // get Apple
-                command: /^get ([0-9a-zA-Z ]+)$/i,
-                action: (stockName) => {
-                    this.sendTextMessage(senderID, `${stockName} : $127.65`);
-                }
-            },
-            {
-                getUser: () => this.findUser(senderID),
                 // cancel
                 command: /^cancel$/i,
                 action: () => {
-                    this.sendTextMessage(senderID, `cancel current order`);
+                    this.sendTextMessage(senderID, `100 units Apple purchase order is canceled`);
                 }
             },
             {
-                getUser: () => this.findUser(senderID),
+                //show list of example stock codes
+                command: /^stocks$/i,
+                action: () => {
+                    const stockNames = [
+                        {
+                            name: 'Apple Inc',
+                            code: 'APPL'
+                        },
+                        {
+                            name: 'Microsoft Corp',
+                            code: 'MSFT'
+                        },
+                        {
+                            name: 'Facebook Inc',
+                            code: 'FB'
+                        },
+                        {
+                            name: 'International Business Machines',
+                            code: 'IBM'
+                        },
+                        {
+                            name: 'Alphabet Class C',
+                            code: 'GOOGL'
+                        },
+                        {
+                            name: 'Salesforce.Com Inc',
+                            code: 'CRM'
+                        }
+                    ];
+
+                    const message = stockNames.map(stock => `${stock.code}\n${stock.name}`)
+                        .join('\n\n');
+                    this.sendTextMessage(senderID, message);
+                }
+            },
+            {
                 //get stock price
                 command: /^price of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                      robinhood(null).quote_data(stockName, (err, res, body) => {
-                          if (err) this.sendTextMessage(senderID, `error`)
-                          const answer = body.results[0].ask_price
-                          this.sendTextMessage(senderID, `${stockName} is at ${answer}`)
-                      });
+                    var Robinhood = require('robinhood')({token: ''}, () => {
+                        Robinhood.quote_data(stockName.toUpperCase(), (error, response, body) => {
+                            if (error) this.sendTextMessage(senderID, `I am not able to find the stock price for ${stockName}`);
+                            const price = body.results[0].ask_price;
+                            this.sendTextMessage(senderID, `${stockName} is at $${price}`);
+                        });
+
+                    });
                 }
             },
             {
-                getUser: () => this.findUser(senderID),
+                //get stock price
+                command: /^help$/i,
+                action: () => {
+                    const commands = [
+                        {
+                            cmd: 'buy 100 Apple',
+                            message: 'Buy 100 units Apple stock'
+                        },
+                        {
+                            cmd: 'buy $100 Apple',
+                            message: 'Buy Apple stocks worth 100 dollars'
+                        },
+                        {
+                            cmd: 'sell 100 Apple',
+                            message: 'Sell 100 units Apple stock'
+                        },
+                        {
+                            cmd: 'sell $100 Apple',
+                            message: 'Sell Apple stocks worth 100 dollars'
+                        },
+                        {
+                            cmd: 'list',
+                            message: 'List all the orders placed'
+                        },
+                        {
+                            cmd: 'stocks',
+                            message: 'List stock code for popular tech companies'
+                        },
+                        {
+                            cmd: 'price of Apple',
+                            message: 'Get the current stock price for Apple'
+                        },
+                        {
+                            cmd: 'cancel',
+                            message: 'Cancel the last order'
+                        }
+                    ];
+                    const helpMessage = commands.map(command =>
+                        `${command.cmd} => ${command.message}`)
+                        .join('\n\n');
+                    this.sendTextMessage(senderID, helpMessage);
+                }
+            },
+            {
                 //get news
                 command: /^news of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
@@ -383,7 +455,7 @@ module.exports = class MessengerController {
                     const addition = "";
                     if (score < 0.3) {
                         addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
-                    }else if (score > 0.7) {
+                    } else if (score > 0.7) {
                         addition = `. ${stockName} has been showing up positively in media. Good for you!`;
                     }
                     this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
@@ -391,12 +463,11 @@ module.exports = class MessengerController {
                 }
             },
             {
-                getUser: () => this.findUser(senderID),
                 command: /^visualize$/i,
-                action: (stockName) => {
+                action: () => {
                     this.sendImageMessage(senderID)
                 }
-                
+
             }
         ];
 
@@ -404,16 +475,21 @@ module.exports = class MessengerController {
             let results = messageText.match(handler.command);
             if (results) {
                 let params = results.slice(1);
-                handler.getUser().catch((err) => {
-                    return this.promoteAccountLinking(senderID);
-                }).then((user) => {
-                    params.append(user);
+                if (handler.getUser) {
+                    handler.getUser().catch((err) => {
+                        return this.promoteAccountLinking(senderID);
+                    }).then((user) => {
+                        params.append(user);
+                        handler.action.apply(this, params);
+                    });
+
+                } else {
                     handler.action.apply(this, params);
-                });
+                    return;
+                }
             }
         }
-
-        this.sendTextMessage(senderID, 'Ha?');
+        this.sendTextMessage(senderID, `I haven't supported '${messageText}' yet. Please reply 'help' to check all the commands available.`);
     }
 
 
