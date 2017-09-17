@@ -193,10 +193,14 @@ module.exports = class MessengerController {
     }
 
     promoteAccountLinking(facebookUserID) {
-        this.sendButtonMessage(facebookUserID, [{
-            type: 'account_link',
-            url: `${this.SERVER_URL}authorize`
-        }]);
+        this.sendButtonMessage(
+            facebookUserID,
+            'Log into Robinhood and start trading',
+            [{
+                type: 'account_link',
+                url: `${this.SERVER_URL}authorize`
+            }]
+        );
     }
 
     /*
@@ -547,7 +551,7 @@ module.exports = class MessengerController {
                 attachment: {
                     type: "template",
                     payload: {
-                        text: 'Log into Robinhood and start trading',
+                        text: text,
                         template_type: "button",
                         buttons: buttons
                     }
