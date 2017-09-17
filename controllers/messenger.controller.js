@@ -321,13 +321,11 @@ module.exports = class MessengerController {
                 //get stock price
                 command: /^price of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                    var Robinhood = require('robinhood')({token: ''}, function(){
-
-                        Robinhood.quote_data('GOOG', function(error, response, body) {
+                    var Robinhood = require('robinhood')({token: ''}, function () {
+                        Robinhood.quote_data(stockName.toUpperCase(), function (error, response, body) {
                             if (error) this.sendTextMessage(senderID, `I am not able to find the stock price for ${stockName}`);
                             const price = body.results[0].ask_price;
-                            // this.sendTextMessage(senderID, `${stockName} is at ${price}`);
-                            console.log(body);
+                            this.sendTextMessage(senderID, `${stockName} is at ${price}`);
                         });
 
                     });
