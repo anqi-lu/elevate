@@ -187,13 +187,16 @@ module.exports = class MessengerController {
         this.sendTextMessage(senderID, "Authentication successful");
     }
 
-    findUser(facebookID) {
-        console.log(facebookID);
+    findUser(facebookUserID) {
+        console.log(facebookUserID);
         return null;
     }
 
-    promoteAccountLinking(facebookID) {
-
+    promoteAccountLinking(facebookUserID) {
+        this.sendButtonMessage(facebookUserID, {
+            "type": "account_link",
+            "url": `${this.SERVER_URL}/authorize`
+        });
     }
 
     /*
@@ -216,7 +219,7 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
-        if(!message.text) {
+        if (!message.text) {
             this.sendTextMessage(senderID, `Ha?`);
             return;
         }
@@ -269,7 +272,7 @@ module.exports = class MessengerController {
             {
                 getUser: () => this.findUser(senderID),
                 // list
-                command : /^list$/i,
+                command: /^list$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `List all orders`);
                 }
@@ -277,7 +280,7 @@ module.exports = class MessengerController {
             {
                 getUser: () => this.findUser(senderID),
                 // get Apple
-                command : /^get ([0-9a-zA-Z ]+)$/i,
+                command: /^get ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
                     this.sendTextMessage(senderID, `${stockName} : $127.65`);
                 }
@@ -285,7 +288,7 @@ module.exports = class MessengerController {
             {
                 getUser: () => this.findUser(senderID),
                 // cancel
-                command : /^cancel$/i,
+                command: /^cancel$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `cancel current order`);
                 }
@@ -297,9 +300,9 @@ module.exports = class MessengerController {
             if (results) {
 
                 let params = results.slice(1);
-                if(handler.getUser) {
+                if (handler.getUser) {
                     const user = handler.getUser();
-                    if(!user) {
+                    if (!user) {
                         this.promoteAccountLinking(senderID);
                         continue;
                     }
@@ -535,7 +538,7 @@ module.exports = class MessengerController {
      * Send a button message using the Send API.
      *
      */
-    sendButtonMessage(recipientId) {
+    sendButtonMessage(recipientId, buttons) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -545,20 +548,7 @@ module.exports = class MessengerController {
                     type: "template",
                     payload: {
                         template_type: "button",
-                        text: "This is test text",
-                        buttons: [{
-                            type: "web_url",
-                            url: "https://www.oculus.com/en-us/rift/",
-                            title: "Open Web URL"
-                        }, {
-                            type: "postback",
-                            title: "Trigger Postback",
-                            payload: "DEVELOPER_DEFINED_PAYLOAD"
-                        }, {
-                            type: "phone_number",
-                            title: "Call Phone Number",
-                            payload: "+16505551234"
-                        }]
+                        buttons: buttons
                     }
                 }
             }
