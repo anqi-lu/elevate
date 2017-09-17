@@ -48,10 +48,10 @@
     <Compile Include="loader.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="models\messages.js">
+    <Compile Include="models\message.model.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="models\users.js">
+    <Compile Include="models\user.model.js">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
