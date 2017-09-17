@@ -10,7 +10,7 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const    crypto = require('crypto'),
+const crypto = require('crypto'),
     request = require('request'),
     robinhood = require('robinhood'),
     orders = require('../lib/robinhood/orders.js'),
@@ -129,7 +129,7 @@ module.exports = class MessengerController {
             req.on('end', () => {
                 const body = querystring.parse(data);
 
-                this.signIn(body.username, body.password)
+                this.signIn(body.userID, body.username, body.password)
                     .then(() => {
                             const userID = body.userID;
                         },
@@ -147,7 +147,7 @@ module.exports = class MessengerController {
     }
 
     signIn(username, password) {
-        return new Promise((success, fail)=>{
+        return new Promise((success, fail) => {
             fail();
         });
     }
@@ -312,18 +312,10 @@ module.exports = class MessengerController {
             },
             {
                 getUser: () => this.findUser(senderID),
-                // get Apple
-                command: /^get ([0-9a-zA-Z ]+)$/i,
-                action: (stockName) => {
-                    this.sendTextMessage(senderID, `${stockName} : $127.65`);
-                }
-            },
-            {
-                getUser: () => this.findUser(senderID),
                 // cancel
                 command: /^cancel$/i,
                 action: () => {
-                    this.sendTextMessage(senderID, `cancel current order`);
+                    this.sendTextMessage(senderID, `100 units Apple purchase order is canceled`);
                 }
             },
             {
@@ -331,11 +323,51 @@ module.exports = class MessengerController {
                 //get stock price
                 command: /^price of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                      robinhood(null).quote_data(stockName, (err, res, body) => {
-                          if (err) this.sendTextMessage(senderID, `error`)
-                          const answer = body.results[0].ask_price
-                          this.sendTextMessage(senderID, `${stockName} is at ${answer}`)
-                      });
+                    robinhood(null).quote_data(stockName, (err, res, body) => {
+                        if (err) this.sendTextMessage(senderID, `error`);
+                        const answer = body.results[0].ask_price;
+                        this.sendTextMessage(senderID, `${stockName} is at ${answer}`);
+                    });
+                }
+            },
+            {
+                //get stock price
+                command: /^help$/i,
+                action: () => {
+                    const commands = [
+                        {
+                            cmd: 'buy 100 Apple',
+                            message: 'Buy 100 units Apple stock'
+                        },
+                        {
+                            cmd: 'buy $100 Apple',
+                            message: 'Buy Apple stocks worth 100 dollars'
+                        },
+                        {
+                            cmd: 'sell 100 Apple',
+                            message: 'Sell 100 units Apple stock'
+                        },
+                        {
+                            cmd: 'sell $100 Apple',
+                            message: 'Sell Apple stocks worth 100 dollars'
+                        },
+                        {
+                            cmd: 'list',
+                            message: 'List all the orders placed'
+                        },
+                        {
+                            cmd: 'price of Apple',
+                            message: 'Get the current stock price for Apple'
+                        },
+                        {
+                            cmd: 'cancel',
+                            message: 'Cancel the last order'
+                        }
+                    ];
+                    const helpMessage = commands.map(command =>
+                        `${command.cmd} => ${command.message}`)
+                        .join('\n');
+                    this.sendTextMessage(senderID, helpMessage);
                 }
             }
         ];
