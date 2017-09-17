@@ -233,6 +233,16 @@ module.exports = class MessengerController {
     }
 
     findUser(facebookUserID) {
+        return new Promise((resolve, reject) => {
+            user.findOne({ facebook_profile_id: facebookUserID }, (err, data) => {
+                if (err) {
+                    return reject(err);
+                }
+                return resolve();
+
+            });
+       
+        });
         console.log(facebookUserID);
         return null;
     }
