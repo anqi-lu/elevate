@@ -207,8 +207,6 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
-        console.log(JSON.stringify(message));
-
         if(message.type !== 'text') {
             this.sendTextMessage(senderID, "Quick reply tapped");
             return;
@@ -822,6 +820,13 @@ module.exports = class MessengerController {
      *
      */
     callSendAPI(messageData) {
+        console.log(JSON.stringify({
+            uri: 'https://graph.facebook.com/v2.6/me/messages',
+            qs: {access_token: this.PAGE_ACCESS_TOKEN},
+            method: 'POST',
+            json: messageData
+
+        }));
         request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: this.PAGE_ACCESS_TOKEN},
