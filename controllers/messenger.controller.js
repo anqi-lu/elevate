@@ -125,9 +125,10 @@ module.exports = class MessengerController {
             //
             // // Redirect users to this URI on successful login
             // var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-
-            console.log(req.query['userID'], '+++++++++++++++++');
-            var html = pug.renderFile('./views/authorize.pug', {});
+            var html = pug.renderFile('./views/authorize.pug', {
+                pageTitle: 'Link Robinhood Account',
+                userID: req.query.userID
+            });
             res.end(html);
         });
 
@@ -139,7 +140,7 @@ module.exports = class MessengerController {
 
             req.on('end', () => {
                 const body = querystring.parse(data);
-
+                console.log(JSON.stringify(body));
             });
             res.end();
         });

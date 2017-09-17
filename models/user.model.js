@@ -14,16 +14,16 @@ module.exports = mongoose.model('Users', {
     robinhood_password: {
         type: String
     },
-    "coinbase_access_token": {
+    coinbase_access_token: {
         type: String
     },
-    "coinbase_refresh_token": {
+    coinbase_refresh_token: {
         type: String
     },
-    "previous_command": {
+    previous_command: {
         type: String
     },
-    "state": {
+    state: {
         type: Object
     }
 });
