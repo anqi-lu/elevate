@@ -366,7 +366,7 @@ module.exports = class MessengerController {
                     ];
                     const helpMessage = commands.map(command =>
                         `${command.cmd} => ${command.message}`)
-                        .join('\n');
+                        .join('\n\n');
                     this.sendTextMessage(senderID, helpMessage);
                 }
             }
@@ -387,10 +387,11 @@ module.exports = class MessengerController {
                 }
 
                 handler.action.apply(this, params);
+                return;
             }
         }
 
-        this.sendTextMessage(senderID, 'Ha?');
+        this.sendTextMessage(senderID, 'help => List all the commands available');
     }
 
 
