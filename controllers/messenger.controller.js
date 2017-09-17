@@ -232,14 +232,14 @@ module.exports = class MessengerController {
             {
                 // buy $100 Apple
                 command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
-                action: (stockName, dollars) => {
+                action: (dollars, stockName) => {
                     this.sendTextMessage(senderID, `Bought 20 shares of ${stockName} worth $${dollars}`);
                 }
             },
             {
                 // sell 100 Apple
                 command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
-                action: (stockName, numOfShares) => {
+                action: (numOfShares, stockName) => {
                     this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
                 }
             },
