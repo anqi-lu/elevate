@@ -17,7 +17,7 @@ const config = require('config'),
     orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
-    find_news = require('../news.js'),
+    find_news = require('./news.js'),
     pug = require('pug');
 
 module.exports = class MessengerController {
@@ -359,7 +359,7 @@ module.exports = class MessengerController {
                 command: /^news of ([0-9a-zA-Z ]+)$/i,
                 action: (companyName) => {
                     //
-                    var key = CalculateScore(companyName);
+                    var key = calculateScore(companyName);
                     key.exe();
                     const answer = key.document;
                     this.sendTextMessage(senderID, answer);
