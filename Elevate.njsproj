@@ -21,10 +21,28 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="lib\fb_messenger\events\delivery.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\events\account_linking.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\events\message.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\events\optin.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\events\postback.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="lib\fb_messenger\index.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="lib\fb_messenger\place_buy_order.js">
+    <Compile Include="lib\fb_messenger\send_examples.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\fb_messenger\verify_webhook.js">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="lib\robinhood\investment_profile.js">
@@ -37,7 +55,10 @@
     <Compile Include="loader.js">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="models\user.js">
+    <Compile Include="models\message.model.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="models\user.model.js">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
@@ -46,6 +67,7 @@
     <Folder Include="lib\" />
     <Folder Include="lib\fb_messenger\" />
     <Folder Include="lib\coinbase\" />
+    <Folder Include="lib\fb_messenger\events\" />
     <Folder Include="lib\robinhood\" />
     <Folder Include="lib\robinhood\orders\" />
     <Folder Include="lib\robinhood\orders\{id}\" />
