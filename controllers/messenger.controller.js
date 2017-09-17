@@ -147,7 +147,7 @@ module.exports = class MessengerController {
             var method = elements[0];
             var signatureHash = elements[1];
 
-            var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+            var expectedHash = crypto.createHmac('sha1', this.APP_SECRET)
                 .update(buf)
                 .digest('hex');
 
@@ -814,7 +814,7 @@ module.exports = class MessengerController {
      *
      */
     callSendAPI(messageData) {
-        request({
+        this.request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: this.PAGE_ACCESS_TOKEN},
             method: 'POST',
@@ -837,4 +837,4 @@ module.exports = class MessengerController {
             }
         });
     }
-}
+};
