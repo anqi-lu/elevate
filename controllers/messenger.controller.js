@@ -249,6 +249,27 @@ module.exports = class MessengerController {
                 action: (dollars, stockName) => {
                     this.sendTextMessage(senderID, `Sold 20 shares of ${stockName} worth $${dollars}`);
                 }
+            },
+            {
+                //list orders
+                command : /^list orders$/i,
+                action: () => {
+                    this.sendTextMessage(senderID, `List all orders`);
+                }
+            },
+            {
+                //get stock price
+                command : /^get ([0-9a-zA-Z ]+)$/i,
+                action: (stockName) => {
+                    this.sendTextMessage(senderID, `${stockName} : $127.65`);
+                }
+            },
+            {
+                //cancel orders
+                command : /^cancel order/i,
+                action: () => {
+                    this.sendTextMessage(senderID, `cancel current order`);
+                }
             }
         ];
 
