@@ -140,7 +140,7 @@ module.exports = class MessengerController {
 
             req.on('end', () => {
                 const body = querystring.parse(data);
-                console.log(JSON.stringify(body));
+                console.log(JSON.stringify(body), '+++++++');
             });
             res.end();
         });
