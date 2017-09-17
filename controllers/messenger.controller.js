@@ -13,7 +13,8 @@
 const config = require('config'),
     crypto = require('crypto'),
     request = require('request'),
-    pug = require('pug');
+    pug = require('pug'),
+    querystring = require('querystring');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -107,8 +108,7 @@ module.exports = class MessengerController {
                     // successfully received the callback. Otherwise, the request will time out.
                     res.sendStatus(200);
                 }
-            }
-        );
+            });
 
         /*
          * This path is used for account linking. The account linking call-to-action
@@ -126,10 +126,22 @@ module.exports = class MessengerController {
                 // Redirect users to this URI on successful login
                 var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 
-                var html = pug.renderFile('./../views/authorize.pug', {});
+                var html = pug.renderFile('./views/authorize.pug', {});
                 res.end(html);
-            }
-        );
+            });
+
+        app.post('/robinhood/signin', (req, res) => {
+            var data = '';
+            req.on('data', (chunk) => {
+                data += chunk;
+            });
+
+            req.on('end', () => {
+                const body = querystring.parse(data);
+
+            });
+            res.end();
+        });
     }
 
     /*
@@ -199,11 +211,13 @@ module.exports = class MessengerController {
     promoteAccountLinking(facebookUserID) {
         this.sendButtonMessage(
             facebookUserID,
-            'Log into Robinhood and start trading',
-            [{
-                type: 'account_link',
-                url: `${this.SERVER_URL}authorize`
-            }]
+            'Link to your Robinhood account and start trading',
+            [
+                {
+                    type: 'account_link',
+                    url: `${this.SERVER_URL}authorize`
+                }
+            ]
         );
     }
 
