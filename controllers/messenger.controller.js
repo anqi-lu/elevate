@@ -540,6 +540,7 @@ module.exports = class MessengerController {
      *
      */
     sendButtonMessage(recipientId, text, buttons) {
+        console.log('++++++++++');
         var messageData = {
             recipient: {
                 id: recipientId
