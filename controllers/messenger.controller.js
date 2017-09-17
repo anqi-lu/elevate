@@ -187,6 +187,11 @@ module.exports = class MessengerController {
         this.sendTextMessage(senderID, "Authentication successful");
     }
 
+    findUser(facebookID) {
+        console.log(facebookID);
+        return null;
+    }
+
     /*
      * Message Event
      *
@@ -207,8 +212,6 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
-        console.log(JSON.stringify(event));
-
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
 
@@ -223,6 +226,7 @@ module.exports = class MessengerController {
 
         const handlers = [
             {
+                getUser: () => this.findUser(senderID),
                 // buy 100 Apple
                 command: /^buy ([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (numOfShares, stockName) => {
@@ -230,6 +234,7 @@ module.exports = class MessengerController {
                 }
             },
             {
+                getUser: () => this.findUser(senderID),
                 // buy $100 Apple
                 command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (dollars, stockName) => {
@@ -237,6 +242,7 @@ module.exports = class MessengerController {
                 }
             },
             {
+                getUser: () => this.findUser(senderID),
                 // sell 100 Apple
                 command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (numOfShares, stockName) => {
@@ -244,6 +250,7 @@ module.exports = class MessengerController {
                 }
             },
             {
+                getUser: () => this.findUser(senderID),
                 // buy $100 Apple
                 command: /^sell \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (dollars, stockName) => {
@@ -251,21 +258,24 @@ module.exports = class MessengerController {
                 }
             },
             {
-                //list
+                getUser: () => this.findUser(senderID),
+                // list
                 command : /^list$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `List all orders`);
                 }
             },
             {
-                //get stockName
+                getUser: () => this.findUser(senderID),
+                // get Apple
                 command : /^get ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
                     this.sendTextMessage(senderID, `${stockName} : $127.65`);
                 }
             },
             {
-                //cancel
+                getUser: () => this.findUser(senderID),
+                // cancel
                 command : /^cancel$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `cancel current order`);
@@ -276,10 +286,15 @@ module.exports = class MessengerController {
         for (let handler of handlers) {
             let results = messageText.match(handler.command);
             if (results) {
+
                 let params = results.slice(1);
-                console.log(results);
+                if(handler.getUser) {
+                    const user = handler.getUser();
+                    if(!user) continue;
+                    params.append(user);
+                }
+
                 handler.action.apply(this, params);
-                return;
             }
         }
 
