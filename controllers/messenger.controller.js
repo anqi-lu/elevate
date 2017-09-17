@@ -465,7 +465,7 @@ module.exports = class MessengerController {
                         }
                         
                         this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} is ${answer[0]}`);
-                        this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                        this.sendTextMessage(senderID, `The average positivity score for news in the past week is ${score}` + addition);
                     });
                 }
             },
