@@ -50,7 +50,7 @@ module.exports = class MessengerController {
          */
         app.get('/webhook', (req, res) => {
             if (req.query['hub.mode'] === 'subscribe' &&
-                req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+                req.query['hub.verify_token'] === this.VALIDATION_TOKEN) {
                 console.log("Validating webhook");
                 res.status(200).send(req.query['hub.challenge']);
             } else {
