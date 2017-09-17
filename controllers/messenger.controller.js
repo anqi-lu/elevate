@@ -479,7 +479,7 @@ module.exports = class MessengerController {
         ];
 
         for (let handler of handlers) {
-            let results = messageText.match(handler.command);
+            let results= messageText.match(handler.command);
             if (results) {
                 let params = results.slice(1);
                 if (handler.getUser) {
