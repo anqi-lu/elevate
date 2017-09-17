@@ -340,7 +340,7 @@ module.exports = class MessengerController {
                 getUser: () => this.findUser(senderID),
                 //get stock price
                 command: /^price of ([0-9a-zA-Z ]+)$/i,
-                action (stockName) => {
+                action: (stockName) => {
                       robinhood(null).quote_data(stockName, (err, res, body) => {
                           if (err) this.sendTextMessage(senderID, `error`)
                           const answer = body.results[0].ask_price
