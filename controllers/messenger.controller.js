@@ -457,15 +457,19 @@ module.exports = class MessengerController {
                 action: (stockName) => {
                     const news = new Score(stockName);
                     news.exe((answer, score) => {
-                        const addition = "";
-                        if (score < 0.3) {
-                            addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
-                        } else if (score > 0.7) {
-                            addition = `. ${stockName} has been showing up positively in media. Good for you!`;
+                        if (!answer) {
+                            this.sendTextMessage(senderId, `Sorry, we are not able to find news about ${stockName} for the past week.`);
+                        }else {
+                            var addition = "";
+                            if (score < 0.3) {
+                                addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
+                            } else if (score > 0.7) {
+                                addition = `. ${stockName} has been showing up positively in media. Good for you!`;
+                            }
+                            
+                            this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} is ${answer[0]}`);
+                            this.sendTextMessage(senderID, `The average positivity score for news in the past week is ${score}` + addition);
                         }
-                        
-                        this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} is ${answer[0]}`);
-                        this.sendTextMessage(senderID, `The average positivity score for news in the past week is ${score}` + addition);
                     });
                 }
             },
