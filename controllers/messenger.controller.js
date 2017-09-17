@@ -126,7 +126,7 @@ module.exports = class MessengerController {
             // // Redirect users to this URI on successful login
             // var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
 
-            console.log(req.params);
+            console.log(req.query);
             var html = pug.renderFile('./views/authorize.pug', {});
             res.end(html);
         });
