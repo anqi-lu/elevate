@@ -11,7 +11,8 @@
 'use strict';
 
 const config = require('config'),
-    crypto = require('crypto');
+    crypto = require('crypto'),
+    request = require('request');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -814,7 +815,7 @@ module.exports = class MessengerController {
      *
      */
     callSendAPI(messageData) {
-        this.request({
+        request({
             uri: 'https://graph.facebook.com/v2.6/me/messages',
             qs: {access_token: this.PAGE_ACCESS_TOKEN},
             method: 'POST',
