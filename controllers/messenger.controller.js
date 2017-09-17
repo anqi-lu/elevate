@@ -548,9 +548,9 @@ module.exports = class MessengerController {
             message: {
                 attachment: {
                     type: "template",
+                    text: text,
                     payload: {
                         template_type: "button",
-                        text: text,
                         buttons: buttons
                     }
                 }
