@@ -10,32 +10,39 @@
 /* jshint node: true, devel: true */
 'use strict';
 
-const config = require('config');
+const config = require('config'),
+    crypto = require('crypto'),
+    request = require('request'),
+    robinhood = require('robinhood'),
+    orders = require('../lib/robinhood/orders.js'),
+    place_buy_order = require('../lib/robinhood/place_buy_order.js'),
+    place_sell_order = require('../lib/robinhood/place_sell_order.js'),
+    pug = require('pug');
 
 module.exports = class MessengerController {
     constructor(app) {
         // App Secret can be retrieved from the App Dashboard
-        const APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
+        this.APP_SECRET = (process.env.MESSENGER_APP_SECRET) ?
             process.env.MESSENGER_APP_SECRET :
             config.get('appSecret');
 
         // Arbitrary value used to validate a webhook
-        const VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
+        this.VALIDATION_TOKEN = (process.env.MESSENGER_VALIDATION_TOKEN) ?
             (process.env.MESSENGER_VALIDATION_TOKEN) :
             config.get('validationToken');
 
         // Generate a page access token for your page from the App Dashboard
-        const PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
+        this.PAGE_ACCESS_TOKEN = (process.env.MESSENGER_PAGE_ACCESS_TOKEN) ?
             (process.env.MESSENGER_PAGE_ACCESS_TOKEN) :
             config.get('pageAccessToken');
 
         // URL where the app is running (include protocol). Used to point to scripts and
         // assets located at this address.
-        const SERVER_URL = (process.env.SERVER_URL) ?
+        this.SERVER_URL = (process.env.SERVER_URL) ?
             (process.env.SERVER_URL) :
             config.get('serverURL');
 
-        if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
+        if (!(this.APP_SECRET && this.VALIDATION_TOKEN && this.PAGE_ACCESS_TOKEN && this.SERVER_URL)) {
             console.error("Missing config values");
             process.exit(1);
         }
@@ -48,7 +55,7 @@ module.exports = class MessengerController {
          */
         app.get('/webhook', (req, res) => {
             if (req.query['hub.mode'] === 'subscribe' &&
-                req.query['hub.verify_token'] === VALIDATION_TOKEN) {
+                req.query['hub.verify_token'] === this.VALIDATION_TOKEN) {
                 console.log("Validating webhook");
                 res.status(200).send(req.query['hub.challenge']);
             } else {
@@ -66,46 +73,45 @@ module.exports = class MessengerController {
          *
          */
         app.post('/webhook', (req, res) => {
-                var data = req.body;
+            var data = req.body;
 
-                // Make sure this is a page subscription
-                if (data.object === 'page') {
-                    // Iterate over each entry
-                    // There may be multiple if batched
-                    data.entry.forEach((pageEntry) => {
-                            var pageID = pageEntry.id;
-                            var timeOfEvent = pageEntry.time;
+            // Make sure this is a page subscription
+            if (data.object === 'page') {
+                // Iterate over each entry
+                // There may be multiple if batched
+                data.entry.forEach((pageEntry) => {
+                        var pageID = pageEntry.id;
+                        var timeOfEvent = pageEntry.time;
 
-                            // Iterate over each messaging event
-                            pageEntry.messaging.forEach((messagingEvent) => {
-                                    if (messagingEvent.optin) {
-                                        this.receivedAuthentication(messagingEvent);
-                                    } else if (messagingEvent.message) {
-                                        this.receivedMessage(messagingEvent);
-                                    } else if (messagingEvent.delivery) {
-                                        this.receivedDeliveryConfirmation(messagingEvent);
-                                    } else if (messagingEvent.postback) {
-                                        this.receivedPostback(messagingEvent);
-                                    } else if (messagingEvent.read) {
-                                        this.receivedMessageRead(messagingEvent);
-                                    } else if (messagingEvent.account_linking) {
-                                        this.receivedAccountLink(messagingEvent);
-                                    } else {
-                                        console.log("Webhook received unknown messagingEvent: ", messagingEvent);
-                                    }
+                        // Iterate over each messaging event
+                        pageEntry.messaging.forEach((messagingEvent) => {
+                                if (messagingEvent.optin) {
+                                    this.receivedAuthentication(messagingEvent);
+                                } else if (messagingEvent.message) {
+                                    this.receivedMessage(messagingEvent);
+                                } else if (messagingEvent.delivery) {
+                                    this.receivedDeliveryConfirmation(messagingEvent);
+                                } else if (messagingEvent.postback) {
+                                    this.receivedPostback(messagingEvent);
+                                } else if (messagingEvent.read) {
+                                    this.receivedMessageRead(messagingEvent);
+                                } else if (messagingEvent.account_linking) {
+                                    this.receivedAccountLink(messagingEvent);
+                                } else {
+                                    console.log("Webhook received unknown messagingEvent: ", messagingEvent);
                                 }
-                            );
-                        }
-                    );
+                            }
+                        );
+                    }
+                );
 
-                    // Assume all went well.
-                    //
-                    // You must send back a 200, within 20 seconds, to let us know you've
-                    // successfully received the callback. Otherwise, the request will time out.
-                    res.sendStatus(200);
-                }
+                // Assume all went well.
+                //
+                // You must send back a 200, within 20 seconds, to let us know you've
+                // successfully received the callback. Otherwise, the request will time out.
+                res.sendStatus(200);
             }
-        );
+        });
 
         /*
          * This path is used for account linking. The account linking call-to-action
@@ -113,17 +119,52 @@ module.exports = class MessengerController {
          *
          */
         app.get('/authorize', (req, res) => {
-                var accountLinkingToken = req.query.account_linking_token;
-                var redirectURI = req.query.redirect_uri;
+            // var accountLinkingToken = req.query.account_linking_token;
+            // var redirectURI = req.query.redirect_uri;
+            //
+            // // Authorization Code should be generated per user by the developer. This will
+            // // be passed to the Account Linking callback.
+            // var authCode = "1234567890";
+            //
+            // // Redirect users to this URI on successful login
+            // var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
+            var html = pug.renderFile('./views/authorize.pug', {
+                pageTitle: 'Link Robinhood Account',
+                userID: req.query.userID
+            });
+            res.end(html);
+        });
 
-                // Authorization Code should be generated per user by the developer. This will
-                // be passed to the Account Linking callback.
-                var authCode = "1234567890";
+        app.post('/robinhood/signin', (req, res) => {
+            var data = '';
+            req.on('data', (chunk) => {
+                data += chunk;
+            });
 
-                // Redirect users to this URI on successful login
-                var redirectURISuccess = redirectURI + "&authorization_code=" + authCode;
-            }
-        );
+            req.on('end', () => {
+                const body = querystring.parse(data);
+
+                this.signIn(body.username, body.password)
+                    .then(() => {
+                            const userID = body.userID;
+                        },
+                        () => {
+                            const html = pug.renderFile('./views/authorize.pug', {
+                                pageTitle: 'Fail to Log in',
+                                error: 'Your Robinhood username or password was entered incorrectly',
+                                userID: req.query.userID
+                            });
+                            res.end(html);
+                        });
+                res.end();
+            });
+        });
+    }
+
+    signIn(username, password) {
+        return new Promise((success, fail)=>{
+            fail();
+        });
     }
 
     /*
@@ -146,7 +187,7 @@ module.exports = class MessengerController {
             var method = elements[0];
             var signatureHash = elements[1];
 
-            var expectedHash = crypto.createHmac('sha1', APP_SECRET)
+            var expectedHash = crypto.createHmac('sha1', this.APP_SECRET)
                 .update(buf)
                 .digest('hex');
 
@@ -182,7 +223,25 @@ module.exports = class MessengerController {
 
         // When an authentication is received, we'll send a message back to the sender
         // to let them know it was successful.
-        sendTextMessage(senderID, "Authentication successful");
+        this.sendTextMessage(senderID, "Authentication successful");
+    }
+
+    findUser(facebookUserID) {
+        console.log(facebookUserID);
+        return null;
+    }
+
+    promoteAccountLinking(facebookUserID) {
+        this.sendButtonMessage(
+            facebookUserID,
+            'Link to your Robinhood account and start trading',
+            [
+                {
+                    type: 'account_link',
+                    url: `${this.SERVER_URL}authorize?userID=${facebookUserID}`
+                }
+            ]
+        );
     }
 
     /*
@@ -205,9 +264,13 @@ module.exports = class MessengerController {
         var timeOfMessage = event.timestamp;
         var message = event.message;
 
+        if (!message.text) {
+            this.sendTextMessage(senderID, `Ha?`);
+            return;
+        }
+
         console.log("Received message for user %d and page %d at %d with message:",
             senderID, recipientID, timeOfMessage);
-        console.log(JSON.stringify(message));
 
         // var isEcho = message.is_echo;
         var messageId = message.mid;
@@ -217,27 +280,77 @@ module.exports = class MessengerController {
         // You may get a text or attachment but not both
         var messageText = message.text;
         var messageAttachments = message.attachments;
-        // var quickReply = message.quick_reply;
-
-        // if (isEcho) {
-        //     // Just logging message echoes to console
-        //     console.log("Received echo for message %s and app %d with metadata %s",
-        //         messageId, appId, metadata);
-        //     return;
-        // } else if (quickReply) {
-        //     var quickReplyPayload = quickReply.payload;
-        //     console.log("Quick reply for message %s with payload %s",
-        //         messageId, quickReplyPayload);
-        //
-        //     sendTextMessage(senderID, "Quick reply tapped");
-        //     return;
-        // }
 
         const handlers = [
             {
-                command: /^buy ([0-9a-zA-Z ]+)$/i,
+                getUser: () => this.findUser(senderID),
+                // buy 100 Apple
+                command: /^buy ([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (numOfShares, stockName) => {
+                    this.sendTextMessage(senderID, `Bought ${numOfShares} shares of ${stockName}`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // buy $100 Apple  user_id, symbol, quantity, price
+                command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (dollars, stockName) => {
+                    place_buy_order(senderID, stockName, numOfShares);
+                    this.sendTextMessage(senderID, `Bought 20 shares of ${stockName} worth $${dollars}`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // sell 100 Apple
+                command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (numOfShares, stockName) => {
+                    place_sell_order(senderID, stockName, numOfShares);
+                    this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // buy $100 Apple
+                command: /^sell \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
+                action: (dollars, stockName) => {
+                    this.sendTextMessage(senderID, `Sold 20 shares of ${stockName} worth $${dollars}`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // list
+                command: /^list$/i,
+                action: () => {
+                    orders(senderID);
+                    this.sendTextMessage(senderID, `List all orders`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // get Apple
+                command: /^get ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
-                    sendTextMessage(senderID, `Ha ha ha ${stockName}`);
+                    this.sendTextMessage(senderID, `${stockName} : $127.65`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                // cancel
+                command: /^cancel$/i,
+                action: () => {
+                    this.sendTextMessage(senderID, `cancel current order`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                //get stock price
+                command: /^price of ([0-9a-zA-Z ]+)$/i,
+                action: (stockName) => {
+                      robinhood(null).quote_data(stockName, (err, res, body) => {
+                          if (err) this.sendTextMessage(senderID, `error`)
+                          const answer = body.results[0].ask_price
+                          this.sendTextMessage(senderID, `${stockName} is at ${answer}`)
+                      });
                 }
             }
         ];
@@ -245,82 +358,22 @@ module.exports = class MessengerController {
         for (let handler of handlers) {
             let results = messageText.match(handler.command);
             if (results) {
+
                 let params = results.slice(1);
-                console.log(results);
+                if (handler.getUser) {
+                    const user = handler.getUser();
+                    if (!user) {
+                        this.promoteAccountLinking(senderID);
+                        return;
+                    }
+                    params.append(user);
+                }
+
                 handler.action.apply(this, params);
-                return;
             }
         }
 
-        sendTextMessage(senderID, messageText);
-
-
-        // if (messageText) {
-        //     switch (messageText) {
-        //         case ''
-        //     }
-        // If we receive a text message, check to see if it matches any special
-        // keywords and send back the corresponding example. Otherwise, just echo
-        // the text we received.
-        // switch (messageText) {
-        //     case 'image':
-        //         sendImageMessage(senderID);
-        //         break;
-        //
-        //     case 'gif':
-        //         sendGifMessage(senderID);
-        //         break;
-        //
-        //     case 'audio':
-        //         sendAudioMessage(senderID);
-        //         break;
-        //
-        //     case 'video':
-        //         sendVideoMessage(senderID);
-        //         break;
-        //
-        //     case 'file':
-        //         sendFileMessage(senderID);
-        //         break;
-        //
-        //     case 'button':
-        //         sendButtonMessage(senderID);
-        //         break;
-        //
-        //     case 'generic':
-        //         sendGenericMessage(senderID);
-        //         break;
-        //
-        //     case 'receipt':
-        //         sendReceiptMessage(senderID);
-        //         break;
-        //
-        //     case 'quick reply':
-        //         sendQuickReply(senderID);
-        //         break;
-        //
-        //     case 'read receipt':
-        //         sendReadReceipt(senderID);
-        //         break;
-        //
-        //     case 'typing on':
-        //         sendTypingOn(senderID);
-        //         break;
-        //
-        //     case 'typing off':
-        //         sendTypingOff(senderID);
-        //         break;
-        //
-        //     case 'account linking':
-        //         sendAccountLinking(senderID);
-        //         break;
-        //
-        //     default:
-        //         sendTextMessage(senderID, messageText);
-        // }
-        // } else if (messageAttachments) {
-        //     sendTextMessage(senderID, "Message with attachment received");
-        // }
+        this.sendTextMessage(senderID, 'Ha?');
     }
 
 
@@ -372,7 +425,7 @@ module.exports = class MessengerController {
 
         // When a postback is called, we'll send a message back to the sender to
         // let them know it was successful
-        sendTextMessage(senderID, "Postback called");
+        this.sendTextMessage(senderID, "Postback called");
     }
 
     /*
@@ -545,7 +598,7 @@ module.exports = class MessengerController {
      * Send a button message using the Send API.
      *
      */
-    sendButtonMessage(recipientId) {
+    sendButtonMessage(recipientId, text, buttons) {
         var messageData = {
             recipient: {
                 id: recipientId
@@ -554,26 +607,13 @@ module.exports = class MessengerController {
                 attachment: {
                     type: "template",
                     payload: {
+                        text: text,
                         template_type: "button",
-                        text: "This is test text",
-                        buttons: [{
-                            type: "web_url",
-                            url: "https://www.oculus.com/en-us/rift/",
-                            title: "Open Web URL"
-                        }, {
-                            type: "postback",
-                            title: "Trigger Postback",
-                            payload: "DEVELOPER_DEFINED_PAYLOAD"
-                        }, {
-                            type: "phone_number",
-                            title: "Call Phone Number",
-                            payload: "+16505551234"
-                        }]
+                        buttons: buttons
                     }
                 }
             }
         };
-
         this.callSendAPI(messageData);
     }
 
@@ -820,7 +860,7 @@ module.exports = class MessengerController {
             json: messageData
 
         }, (error, response, body) => {
-            if (!error && response.statusCode == 200) {
+            if (!error && response.statusCode === 200) {
                 var recipientId = body.recipient_id;
                 var messageId = body.message_id;
 
@@ -836,4 +876,4 @@ module.exports = class MessengerController {
             }
         });
     }
-}
+};

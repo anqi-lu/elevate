@@ -1,0 +1,21 @@
+.container {
+    margin-top: 40px;
+}
+
+.sign-up {
+    color: #00B5AD;
+    padding: 0 20px;
+}
+
+.sign-up:hover {
+    color: #00B5AD;
+    text-decoration: underline;
+}
+
+.copyright {
+    text-align: center;
+    position: fixed;
+    left: 0;
+    right:0;
+    bottom: 50px;
+}

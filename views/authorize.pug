@@ -1,0 +1,25 @@
+doctype html
+html(lang="en")
+    head
+        title= pageTitle
+        link(rel="stylesheet", href="https://cdn.jsdelivr.net/semantic-ui/2.2.10/semantic.min.css")
+        link(rel="stylesheet", href="/styles/authorize.css")
+        meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    body
+        div.ui.aligned.center.container
+            if error
+                div.ui.negative.message
+                    i.close.icon
+                    div.header= error
+
+            h2.ui.teal.header.aligned.center= 'Robinhood'
+            form.ui.large.form(method="post", action="/robinhood/signin")
+                div.field
+                    input(name="username", placeholder="Username")
+                div.field
+                    input(type="password", name="password", placeholder="Password")
+                input(type="hidden", name="userID", value=userID)
+                div.field
+                    a.sign-up(href="https://www.robinhood.com/signup")= "Don't have to an account?"
+                button.ui.fluid.large.teal.submit.button= "Submit"
+            div.copyright= "Copyright © 2017 Elevate. All rights reserved."
