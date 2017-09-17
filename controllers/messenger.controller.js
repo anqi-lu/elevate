@@ -251,22 +251,22 @@ module.exports = class MessengerController {
                 }
             },
             {
-                //list orders
-                command : /^list orders$/i,
+                //list
+                command : /^list$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `List all orders`);
                 }
             },
             {
-                //get stock price
+                //get stockName
                 command : /^get ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
                     this.sendTextMessage(senderID, `${stockName} : $127.65`);
                 }
             },
             {
-                //cancel orders
-                command : /^cancel order/i,
+                //cancel
+                command : /^cancel$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `cancel current order`);
                 }
