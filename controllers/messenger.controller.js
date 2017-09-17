@@ -14,7 +14,9 @@ const config = require('config'),
     crypto = require('crypto'),
     request = require('request'),
     robinhood = require('robinhood'),
+    orders = require('../lib/robinhood/orders.js'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
+    place_sell_order = require('../lib/robinhood/place_sell_order.js'),
     pug = require('pug');
 
 module.exports = class MessengerController {
@@ -290,9 +292,10 @@ module.exports = class MessengerController {
             },
             {
                 getUser: () => this.findUser(senderID),
-                // buy $100 Apple
+                // buy $100 Apple  user_id, symbol, quantity, price
                 command: /^buy \$([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (dollars, stockName) => {
+                    place_buy_order(senderID, stockName, numOfShares);
                     this.sendTextMessage(senderID, `Bought 20 shares of ${stockName} worth $${dollars}`);
                 }
             },
@@ -301,6 +304,7 @@ module.exports = class MessengerController {
                 // sell 100 Apple
                 command: /^sell ([0-9]+) ([0-9a-zA-Z ]+)$/i,
                 action: (numOfShares, stockName) => {
+                    place_sell_order(senderID, stockName, numOfShares);
                     this.sendTextMessage(senderID, `Sold ${numOfShares} shares of ${stockName}`);
                 }
             },
@@ -317,6 +321,7 @@ module.exports = class MessengerController {
                 // list
                 command: /^list$/i,
                 action: () => {
+                    orders(senderID);
                     this.sendTextMessage(senderID, `List all orders`);
                 }
             },
