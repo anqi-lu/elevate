@@ -457,6 +457,7 @@ module.exports = class MessengerController {
                 action: (stockName) => {
                     const news = new Score(stockName);
                     news.exe();
+                    setTimeout(function() {
                     const score = news.score;
                     const answer = news.document;
                     const addition = "";
@@ -467,6 +468,7 @@ module.exports = class MessengerController {
                     }
                     this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
                     this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                    }, 1000);
                 }
             },
             {
