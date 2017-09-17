@@ -129,6 +129,7 @@ module.exports = class MessengerController {
                 pageTitle: 'Link Robinhood Account',
                 userID: req.query.userID
             });
+            console.log(req.query.userID);
             res.end(html);
         });
 
@@ -140,7 +141,7 @@ module.exports = class MessengerController {
 
             req.on('end', () => {
                 const body = querystring.parse(data);
-                console.log(JSON.stringify(body), '+++++++');
+
             });
             res.end();
         });
