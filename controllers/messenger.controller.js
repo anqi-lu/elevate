@@ -310,7 +310,7 @@ module.exports = class MessengerController {
             }
         }
 
-        this.sendTextMessage(senderID, messageText);
+        this.sendTextMessage(senderID, 'Ha?');
     }
 
 
