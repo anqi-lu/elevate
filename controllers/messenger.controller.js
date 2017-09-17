@@ -456,17 +456,16 @@ module.exports = class MessengerController {
                 command: /^news of ([0-9a-zA-Z ]+)$/i,
                 action: (stockName) => {
                     const news = new Score(stockName);
-                    news.exe();
-                    const score = news.score;
-                    const answer = news.document;
-                    const addition = "";
-                    if (score < 0.3) {
-                        addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
-                    } else if (score > 0.7) {
-                        addition = `. ${stockName} has been showing up positively in media. Good for you!`;
-                    }
-                    this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
-                    this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                    news.exe((answer, score) => {
+                        const addition = "";
+                        if (score < 0.3) {
+                            addition = ` ${stockName} has received a lot of negative media coverage. It might affect the stock price negatively.`;
+                        } else if (score > 0.7) {
+                            addition = `. ${stockName} has been showing up positively in media. Good for you!`;
+                        }
+                        this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
+                        this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
+                    });
                 }
             },
             {

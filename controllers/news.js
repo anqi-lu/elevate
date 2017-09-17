@@ -110,7 +110,7 @@ module.exports = class CalculateScore {
 
   /* based on the news, calculate score of positiveness/negativeness */
 
-  exe(){
+  exe(callback){
     this.getNews()
     .then((newList)=>{
       this.analyze(newList.map((headline) => {
@@ -121,7 +121,10 @@ module.exports = class CalculateScore {
             'id': uuidv1,
             'text': headline
           };
-      })).then(analyzedHeadline => this.calculateScore(analyzedHeadline["documents"])
+      })).then(analyzedHeadline =>  {
+        this.calculateScore(analyzedHeadline["documents"]);
+        callback(this.document, this.score);
+      }
       , err => { console.log(err) }
       );
     }, err => { console.log(err) });
