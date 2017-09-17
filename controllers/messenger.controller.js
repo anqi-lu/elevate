@@ -13,8 +13,9 @@
 const config = require('config'),
     crypto = require('crypto'),
     request = require('request'),
-    pug = require('pug'),
-    querystring = require('querystring');
+    robinhood = require('robinhood'),
+    place_buy_order = require('../lib/robinhood/place_buy_order.js'),
+    pug = require('pug');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -318,6 +319,18 @@ module.exports = class MessengerController {
                 command: /^cancel$/i,
                 action: () => {
                     this.sendTextMessage(senderID, `cancel current order`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                //get stock price
+                command: /^price of ([0-9a-zA-Z ]+)$/i,
+                action (stockName) => {
+                      robinhood(null).quote_data(stockName, (err, res, body) => {
+                          if (err) this.sendTextMessage(senderID, `error`)
+                          const answer = body.results[0].ask_price
+                          this.sendTextMessage(senderID, `${stockName} is at ${answer}`)
+                      });
                 }
             }
         ];
