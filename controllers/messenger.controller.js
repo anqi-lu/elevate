@@ -196,7 +196,7 @@ module.exports = class MessengerController {
         this.sendButtonMessage(facebookUserID, {
             type: 'account_link',
             text: 'Log into Robinhood and start trading.',
-            url: `${this.SERVER_URL}/authorize`
+            url: `${this.SERVER_URL}authorize`
         });
     }
 
@@ -809,7 +809,7 @@ module.exports = class MessengerController {
             json: messageData
 
         }, (error, response, body) => {
-            if (!error && response.statusCode == 200) {
+            if (!error && response.statusCode === 200) {
                 var recipientId = body.recipient_id;
                 var messageId = body.message_id;
 
