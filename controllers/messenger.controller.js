@@ -17,6 +17,7 @@ const    crypto = require('crypto'),
     place_buy_order = require('../lib/robinhood/place_buy_order.js'),
     place_sell_order = require('../lib/robinhood/place_sell_order.js'),
     pug = require('pug');
+const user = require('../models/user.model');
 
 module.exports = class MessengerController {
     constructor(app) {
@@ -129,9 +130,10 @@ module.exports = class MessengerController {
             req.on('end', () => {
                 const body = querystring.parse(data);
 
-                this.signIn(body.username, body.password)
+                this.signIn(body.userID, body.username, body.password)
                     .then(() => {
-                            const userID = body.userID;
+                        const userID = body.userID;
+                        res.send();
                         },
                         () => {
                             const html = pug.renderFile('./views/authorize.pug', {
@@ -146,9 +148,28 @@ module.exports = class MessengerController {
         });
     }
 
-    signIn(username, password) {
-        return new Promise((success, fail)=>{
-            fail();
+    signIn(userId, username, password) {
+        return new Promise((success, fail) => {
+            const credentials = {
+                username: username,
+                password: password
+            };
+            const Robinhood = require('robinhood')(credentials, function (err) {
+                if (err) {
+                    return fail(err);
+                }
+                user.findOneAndUpdate(
+                    { facebook_profile_id: userId }, {
+                        robinhood_username: username,
+                        robinhood_password: password
+                    }, (err) => {
+                        if (err) {
+                            return fail(err);
+                        }
+                        return success();
+                    }
+                );
+            });
         });
     }
 
