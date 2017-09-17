@@ -463,7 +463,8 @@ module.exports = class MessengerController {
                         } else if (score > 0.7) {
                             addition = `. ${stockName} has been showing up positively in media. Good for you!`;
                         }
-                        this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} are ${answer}`);
+                        
+                        this.sendTextMessage(senderID, `The most recent news headlines for ${stockName} is ${answer[0]}`);
                         this.sendTextMessage(senderID, `The positivity score is ${score}` + addition);
                     });
                 }
