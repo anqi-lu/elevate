@@ -45,6 +45,21 @@
     <Compile Include="lib\fb_messenger\verify_webhook.js">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="lib\robinhood\orders.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\robinhood\place_buy_order.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\robinhood\place_sell_order.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\robinhood\positions.js">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="lib\robinhood\quote.js">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="loader.js">
       <SubType>Code</SubType>
     </Compile>
