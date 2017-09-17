@@ -361,9 +361,16 @@ module.exports = class MessengerController {
                     //
                     var key = CalculateScore(companyName);
                     key.exe();
-                    const answer = key.documents;
-                    this.sendTextMessage(senderID, documents);
+                    const answer = key.document;
+                    this.sendTextMessage(senderID, answer);
                     this.sendTextMessage(senderID, `The postivitity score of the news is ${key.score}`);
+                }
+            },
+            {
+                getUser: () => this.findUser(senderID),
+                command: /^visualize$/,
+                action: () => {
+                    this.sendImageMessage(senderID);
                 }
             }
         ];
@@ -492,7 +499,7 @@ module.exports = class MessengerController {
                 attachment: {
                     type: "image",
                     payload: {
-                        url: this.SERVER_URL + "/assets/rift.png"
+                        url: this.SERVER_URL + "/image.png"
                     }
                 }
             }

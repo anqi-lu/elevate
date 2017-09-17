@@ -26,6 +26,7 @@
     "pug": "^2.0.0-rc.4",
     "request": "^2.72.0",
     "robinhood": "^1.1.1",
-    "showdown": "^1.7.4"
+    "showdown": "^1.7.4",
+    "svg-to-image": "^1.1.3"
   }
 }
