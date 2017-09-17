@@ -63,3 +63,4 @@ obj
 bin
 yarn.lock
 package-lock.json
+.idea

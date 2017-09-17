@@ -40,7 +40,7 @@ app.get('/*.md', function (req, res) {
     })
 });
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 // Start server
 // Webhooks must be available via SSL with a certificate signed by a valid 
