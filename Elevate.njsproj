@@ -21,6 +21,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
     <Compile Include="app.js" />
+    <Compile Include="controllers\messenger.controller.js" />
     <Compile Include="lib\fb_messenger\events\delivery.js">
       <SubType>Code</SubType>
     </Compile>
@@ -52,9 +53,6 @@
     <Compile Include="lib\robinhood\orders\post.js" />
     <Compile Include="lib\robinhood\orders\{id}\delete.js" />
     <Compile Include="lib\robinhood\orders\{id}\get.js" />
-    <Compile Include="loader.js">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="models\message.model.js">
       <SubType>Code</SubType>
     </Compile>
@@ -63,6 +61,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="controllers\" />
     <Folder Include="Elevate" />
     <Folder Include="lib\" />
     <Folder Include="lib\fb_messenger\" />

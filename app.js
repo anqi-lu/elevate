@@ -7,15 +7,14 @@ const showdown = require('showdown');
 const converter = new showdown.Converter();
 const fs = require('fs');
 const path = require('path');
-const config = require('config');
 const mongoose = require('mongoose');
 const bluebird = require('bluebird');
+const config = fs.existsSync('./config.json') ? require('./config') : {}
+Object.assign(process.env, config);
 
 
 var app = express();
 module.exports = app;
-
-Object.assign(process.env, config);
 
 // mongoose.connect(process.env.MONGO_URI, {
 //     user: process.env.MONGO_USER,
