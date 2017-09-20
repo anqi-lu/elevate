@@ -1,12 +1,12 @@
 # Elevate
 
-Stocks/investments can be intimidating. This is a HackMIT project to get college students started with stocks! 
+Stocks/investments can be intimidating. This is a HackMIT project to get college students started with stocks through Facebook Messenger Bot! 
 
 ## Features
-- [ ] Authenticate to Robinhood
-- [ ] Trade stocks  
-- [ ] Investing Company Media Check (You'd want to back out if something bad happens!)
-- [ ] Visualization of user data
+- [x] Authenticate to Robinhood
+- [x] Trade stocks through chat
+- [x] Investing Company Media Check (You'd want to back out if something bad happens!)
+- [x] Visualization of user data
 
 ## Technology 
 - [x] Facebook Messenger Bot 
